@@ -20,20 +20,20 @@ use Sylius\Bundle\ApiBundle\Command\IriToIdentifierConversionAwareInterface;
 class AddProductReview implements IriToIdentifierConversionAwareInterface, CustomerEmailAwareInterface
 {
     public function __construct(
-        public ?string $title,
+        public string $title,
         public ?int $rating,
-        public ?string $comment,
-        public ?string $productCode,
-        public ?string $email = null,
+        public string $comment,
+        public string $productCode,
+        public string $email,
     ) {
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function setEmail(?string $email): void
+    public function setEmail(string $email): void
     {
         $this->email = $email;
     }

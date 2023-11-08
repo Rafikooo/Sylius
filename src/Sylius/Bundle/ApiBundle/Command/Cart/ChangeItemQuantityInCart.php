@@ -39,22 +39,22 @@ class ChangeItemQuantityInCart implements OrderTokenValueAwareInterface, Subreso
         return $command;
     }
 
-    public function getOrderTokenValue(): ?string
+    public function getOrderTokenValue(): string
     {
         return $this->orderTokenValue;
     }
 
-    public function setOrderTokenValue(?string $orderTokenValue): void
+    public function setOrderTokenValue(string $orderTokenValue): void
     {
         $this->orderTokenValue = $orderTokenValue;
     }
 
-    public function getSubresourceId(): ?string
+    public function getSubresourceId(): string
     {
         return $this->orderItemId;
     }
 
-    public function setSubresourceId(?string $subresourceId): void
+    public function setSubresourceId(string $subresourceId): void
     {
         $this->orderItemId = $subresourceId;
     }

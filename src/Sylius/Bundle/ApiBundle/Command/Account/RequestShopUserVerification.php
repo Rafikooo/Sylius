@@ -27,17 +27,17 @@ class RequestShopUserVerification implements
 {
     public function __construct(
         protected string|int|null $shopUserId,
-        protected ?string $channelCode,
-        protected ?string $localeCode,
+        protected string $channelCode,
+        protected string $localeCode,
     ) {
     }
 
-    public function getChannelCode(): ?string
+    public function getChannelCode(): string
     {
         return $this->channelCode;
     }
 
-    public function getLocaleCode(): ?string
+    public function getLocaleCode(): string
     {
         return $this->localeCode;
     }

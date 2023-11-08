@@ -16,5 +16,5 @@ namespace Sylius\Bundle\ApiBundle\Command;
 /** @experimental */
 interface LocaleCodeAwareInterface
 {
-    public function getLocaleCode(): ?string;
+    public function getLocaleCode(): string;
 }

@@ -38,22 +38,22 @@ class ChooseShippingMethod implements OrderTokenValueAwareInterface, Subresource
         $this->shippingMethodCode = $shippingMethodCode;
     }
 
-    public function getOrderTokenValue(): ?string
+    public function getOrderTokenValue(): string
     {
         return $this->orderTokenValue;
     }
 
-    public function setOrderTokenValue(?string $orderTokenValue): void
+    public function setOrderTokenValue(string $orderTokenValue): void
     {
         $this->orderTokenValue = $orderTokenValue;
     }
 
-    public function getSubresourceId(): ?string
+    public function getSubresourceId(): string
     {
         return $this->shipmentId;
     }
 
-    public function setSubresourceId(?string $subresourceId): void
+    public function setSubresourceId(string $subresourceId): void
     {
         $this->shipmentId = $subresourceId;
     }

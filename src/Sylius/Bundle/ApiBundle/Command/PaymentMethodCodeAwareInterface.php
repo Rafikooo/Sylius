@@ -16,7 +16,7 @@ namespace Sylius\Bundle\ApiBundle\Command;
 /** @experimental */
 interface PaymentMethodCodeAwareInterface extends CommandAwareDataTransformerInterface
 {
-    public function getPaymentMethodCode(): ?string;
+    public function getPaymentMethodCode(): string;
 
-    public function setPaymentMethodCode(?string $paymentMethodCode): void;
+    public function setPaymentMethodCode(string $paymentMethodCode): void;
 }

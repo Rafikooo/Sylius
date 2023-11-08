@@ -16,5 +16,5 @@ namespace Sylius\Bundle\ApiBundle\Command;
 /** @experimental */
 interface LoggedInCustomerEmailIfNotSetAwareInterface
 {
-    public function getEmail(): ?string;
+    public function getEmail(): string;
 }

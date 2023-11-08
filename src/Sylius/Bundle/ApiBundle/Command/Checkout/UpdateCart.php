@@ -21,10 +21,10 @@ use Sylius\Component\Addressing\Model\AddressInterface;
 /** @experimental */
 class UpdateCart implements OrderTokenValueAwareInterface, CustomerEmailAwareInterface, LocaleCodeAwareInterface
 {
-    public ?string $orderTokenValue = null;
+    public string $orderTokenValue;
 
     /** @psalm-immutable */
-    public ?string $email = null;
+    public string $email;
 
     /** @psalm-immutable */
     public ?AddressInterface $billingAddress = null;
@@ -32,16 +32,16 @@ class UpdateCart implements OrderTokenValueAwareInterface, CustomerEmailAwareInt
     /** @psalm-immutable */
     public ?AddressInterface $shippingAddress = null;
 
-    public ?string $couponCode = null;
+    public string $couponCode;
 
-    public ?string $localeCode = null;
+    public string $localeCode;
 
     public function __construct(
-        ?string $email = null,
+        string $email = null,
         ?AddressInterface $billingAddress = null,
         ?AddressInterface $shippingAddress = null,
-        ?string $couponCode = null,
-        ?string $localeCode = null,
+        string $couponCode = null,
+        string $localeCode = null,
     ) {
         $this->email = $email;
         $this->billingAddress = $billingAddress;
@@ -50,27 +50,27 @@ class UpdateCart implements OrderTokenValueAwareInterface, CustomerEmailAwareInt
         $this->localeCode = $localeCode;
     }
 
-    public static function createWithCouponData(?string $couponCode): self
+    public static function createWithCouponData(string $couponCode): self
     {
         return new self(null, null, null, $couponCode);
     }
 
-    public function getOrderTokenValue(): ?string
+    public function getOrderTokenValue(): string
     {
         return $this->orderTokenValue;
     }
 
-    public function setOrderTokenValue(?string $orderTokenValue): void
+    public function setOrderTokenValue(string $orderTokenValue): void
     {
         $this->orderTokenValue = $orderTokenValue;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function setEmail(?string $email): void
+    public function setEmail(string $email): void
     {
         $this->email = $email;
     }
@@ -95,22 +95,22 @@ class UpdateCart implements OrderTokenValueAwareInterface, CustomerEmailAwareInt
         $this->shippingAddress = $shippingAddress;
     }
 
-    public function getCouponCode(): ?string
+    public function getCouponCode(): string
     {
         return $this->couponCode;
     }
 
-    public function setCouponCode(?string $couponCode): void
+    public function setCouponCode(string $couponCode): void
     {
         $this->couponCode = $couponCode;
     }
 
-    public function getLocaleCode(): ?string
+    public function getLocaleCode(): string
     {
         return $this->localeCode;
     }
 
-    public function setLocaleCode(?string $localeCode): void
+    public function setLocaleCode(string $localeCode): void
     {
         $this->localeCode = $localeCode;
     }

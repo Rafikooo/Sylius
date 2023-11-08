@@ -29,36 +29,36 @@ class PickupCart implements ChannelCodeAwareInterface, CustomerEmailAwareInterfa
     /** @var string|null */
     public $email;
 
-    public function __construct(public ?string $tokenValue = null)
+    public function __construct(public string $tokenValue)
     {
     }
 
-    public function getChannelCode(): ?string
+    public function getChannelCode(): string
     {
         return $this->channelCode;
     }
 
-    public function setChannelCode(?string $channelCode): void
+    public function setChannelCode(string $channelCode): void
     {
         $this->channelCode = $channelCode;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function setEmail(?string $email): void
+    public function setEmail(string $email): void
     {
         $this->email = $email;
     }
 
-    public function getLocaleCode(): ?string
+    public function getLocaleCode(): string
     {
         return $this->localeCode;
     }
 
-    public function setLocaleCode(?string $localeCode): void
+    public function setLocaleCode(string $localeCode): void
     {
         $this->localeCode = $localeCode;
     }

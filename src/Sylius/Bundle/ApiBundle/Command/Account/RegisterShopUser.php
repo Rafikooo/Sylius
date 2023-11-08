@@ -26,18 +26,18 @@ class RegisterShopUser implements ChannelCodeAwareInterface, LocaleCodeAwareInte
         protected string $lastName,
         protected string $email,
         protected string $password,
-        protected ?string $channelCode,
-        protected ?string $localeCode,
+        protected string $channelCode,
+        protected string $localeCode,
         protected bool $subscribedToNewsletter = false,
     ) {
     }
 
-    public function getChannelCode(): ?string
+    public function getChannelCode(): string
     {
         return $this->channelCode;
     }
 
-    public function getLocaleCode(): ?string
+    public function getLocaleCode(): string
     {
         return $this->localeCode;
     }

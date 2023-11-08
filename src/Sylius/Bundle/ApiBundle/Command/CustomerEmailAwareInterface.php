@@ -16,7 +16,7 @@ namespace Sylius\Bundle\ApiBundle\Command;
 /** @experimental */
 interface CustomerEmailAwareInterface extends CommandAwareDataTransformerInterface
 {
-    public function getEmail(): ?string;
+    public function getEmail(): string;
 
-    public function setEmail(?string $email): void;
+    public function setEmail(string $email): void;
 }

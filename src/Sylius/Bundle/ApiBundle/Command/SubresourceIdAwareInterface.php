@@ -16,9 +16,9 @@ namespace Sylius\Bundle\ApiBundle\Command;
 /** @experimental */
 interface SubresourceIdAwareInterface extends CommandAwareDataTransformerInterface
 {
-    public function getSubresourceId(): ?string;
+    public function getSubresourceId(): string;
 
-    public function setSubresourceId(?string $subresourceId): void;
+    public function setSubresourceId(string $subresourceId): void;
 
     public function getSubresourceIdAttributeKey(): string;
 }

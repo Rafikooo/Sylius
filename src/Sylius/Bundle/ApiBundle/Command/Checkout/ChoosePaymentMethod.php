@@ -43,22 +43,22 @@ class ChoosePaymentMethod implements OrderTokenValueAwareInterface, SubresourceI
         $this->paymentMethodCode = $paymentMethodCode;
     }
 
-    public function getOrderTokenValue(): ?string
+    public function getOrderTokenValue(): string
     {
         return $this->orderTokenValue;
     }
 
-    public function setOrderTokenValue(?string $orderTokenValue): void
+    public function setOrderTokenValue(string $orderTokenValue): void
     {
         $this->orderTokenValue = $orderTokenValue;
     }
 
-    public function getSubresourceId(): ?string
+    public function getSubresourceId(): string
     {
         return $this->paymentId;
     }
 
-    public function setSubresourceId(?string $subresourceId): void
+    public function setSubresourceId(string $subresourceId): void
     {
         $this->paymentId = $subresourceId;
     }
@@ -68,12 +68,12 @@ class ChoosePaymentMethod implements OrderTokenValueAwareInterface, SubresourceI
         return 'paymentId';
     }
 
-    public function getPaymentMethodCode(): ?string
+    public function getPaymentMethodCode(): string
     {
         return $this->paymentMethodCode;
     }
 
-    public function setPaymentMethodCode(?string $paymentMethodCode): void
+    public function setPaymentMethodCode(string $paymentMethodCode): void
     {
         $this->paymentMethodCode = $paymentMethodCode;
     }

@@ -22,8 +22,8 @@ class RequestResetPasswordToken implements ChannelCodeAwareInterface, LocaleCode
 {
     public function __construct(
         protected string $email,
-        protected ?string $channelCode,
-        protected ?string $localeCode,
+        protected string $channelCode,
+        protected string $localeCode,
     ) {
     }
 
@@ -32,12 +32,12 @@ class RequestResetPasswordToken implements ChannelCodeAwareInterface, LocaleCode
         return $this->email;
     }
 
-    public function getChannelCode(): ?string
+    public function getChannelCode(): string
     {
         return $this->channelCode;
     }
 
-    public function getLocaleCode(): ?string
+    public function getLocaleCode(): string
     {
         return $this->localeCode;
     }

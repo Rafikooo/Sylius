@@ -22,7 +22,7 @@ class AddItemToCart implements OrderTokenValueAwareInterface, IriToIdentifierCon
     /** @var string|null */
     public $orderTokenValue;
 
-    public function __construct(public ?string $productVariantCode, public ?int $quantity)
+    public function __construct(public string $productVariantCode, public int $quantity)
     {
     }
 
@@ -35,12 +35,12 @@ class AddItemToCart implements OrderTokenValueAwareInterface, IriToIdentifierCon
         return $command;
     }
 
-    public function getOrderTokenValue(): ?string
+    public function getOrderTokenValue(): string
     {
         return $this->orderTokenValue;
     }
 
-    public function setOrderTokenValue(?string $orderTokenValue): void
+    public function setOrderTokenValue(string $orderTokenValue): void
     {
         $this->orderTokenValue = $orderTokenValue;
     }

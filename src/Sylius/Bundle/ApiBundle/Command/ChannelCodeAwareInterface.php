@@ -16,5 +16,5 @@ namespace Sylius\Bundle\ApiBundle\Command;
 /** @experimental */
 interface ChannelCodeAwareInterface
 {
-    public function getChannelCode(): ?string;
+    public function getChannelCode(): string;
 }
