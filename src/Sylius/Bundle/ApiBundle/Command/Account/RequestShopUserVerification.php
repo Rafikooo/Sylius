@@ -26,9 +26,9 @@ class RequestShopUserVerification implements
     IriToIdentifierConversionAwareInterface
 {
     public function __construct(
-        protected string|int|null $shopUserId,
-        protected ?string $channelCode,
-        protected ?string $localeCode,
+        protected string|int $shopUserId,
+        protected string $channelCode,
+        protected string $localeCode,
     ) {
     }
 
