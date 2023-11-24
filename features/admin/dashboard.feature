@@ -16,7 +16,7 @@ Feature: Statistics dashboard in a single channel
     Scenario: Seeing basic statistics for entire store
         Given 3 customers have fulfilled 4 orders placed for total of "$8566.00"
         And then 2 more customers have paid 2 orders placed for total of "$459.00"
-        When I open administration dashboard
+        When I browse administration dashboard statistics
         Then I should see 6 new orders
         And I should see 5 new customers
         And there should be total sales of "$9,025.00"
@@ -29,7 +29,7 @@ Feature: Statistics dashboard in a single channel
         And 2 customers have added products to the cart for total of "$3450.00"
         And a single customer has placed an order for total of "$1000.00"
         But the customer cancelled this order
-        When I open administration dashboard
+        When I browse administration dashboard statistics
         Then I should see 4 new orders
         And I should see 9 new customers
         And there should be total sales of "$5,241.00"
@@ -39,6 +39,6 @@ Feature: Statistics dashboard in a single channel
     Scenario: Seeing recent orders and customers
         Given 2 customers have placed 3 orders for total of "$340.00"
         And 2 customers have added products to the cart for total of "$424.00"
-        When I open administration dashboard
+        When I browse administration dashboard statistics
         Then I should see 4 new customers in the list
         And I should see 3 new orders in the list

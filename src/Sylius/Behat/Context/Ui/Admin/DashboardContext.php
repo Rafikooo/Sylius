@@ -26,10 +26,10 @@ final class DashboardContext implements Context
     }
 
     /**
-     * @Given I am on the administration dashboard
-     * @When I (try to )open administration dashboard
+     * @Given I browse administration dashboard statistics
+     * @When I (try to )browse administration dashboard statistics
      */
-    public function iOpenAdministrationDashboard(): void
+    public function iBrowseAdministrationDashboardStatistics(): void
     {
         try {
             $this->dashboardPage->open();
@@ -38,9 +38,9 @@ final class DashboardContext implements Context
     }
 
     /**
-     * @When I open administration dashboard for :name channel
+     * @When I browse administration dashboard statistics for :name channel
      */
-    public function iOpenAdministrationDashboardForChannel($name)
+    public function iBrowseAdministrationDashboardStatisticsForChannel($name)
     {
         $this->dashboardPage->open(['channel' => StringInflector::nameToLowercaseCode($name)]);
     }
