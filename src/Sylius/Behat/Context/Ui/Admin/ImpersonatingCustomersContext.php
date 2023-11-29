@@ -34,7 +34,7 @@ final class ImpersonatingCustomersContext implements Context
     /**
      * @Given I am impersonating the customer :customer
      */
-    public function iAmImpersonatingCustomer(CustomerInterface $customer)
+    public function iAmImpersonatingCustomer(CustomerInterface $customer): void
     {
         $this->customerShowPage->open(['id' => $customer->getId()]);
         $this->customerShowPage->impersonate();
@@ -44,7 +44,7 @@ final class ImpersonatingCustomersContext implements Context
     /**
      * @When I visit the store
      */
-    public function iVisitTheStore()
+    public function iVisitTheStore(): void
     {
         $this->homePage->open();
     }
@@ -52,7 +52,7 @@ final class ImpersonatingCustomersContext implements Context
     /**
      * @When I log out from the store
      */
-    public function iLogOut()
+    public function iLogOut(): void
     {
         $this->homePage->logOut();
     }
@@ -60,7 +60,7 @@ final class ImpersonatingCustomersContext implements Context
     /**
      * @When I log out from my admin account
      */
-    public function iLogOutFromMyAdminAccount()
+    public function iLogOutFromMyAdminAccount(): void
     {
         $this->dashboardPage->open();
         $this->dashboardPage->logOut();
@@ -69,7 +69,7 @@ final class ImpersonatingCustomersContext implements Context
     /**
      * @When I impersonate them
      */
-    public function iTryToImpersonateThem()
+    public function iTryToImpersonateThem(): void
     {
         $this->customerShowPage->impersonate();
     }
@@ -77,7 +77,7 @@ final class ImpersonatingCustomersContext implements Context
     /**
      * @When I impersonate the customer :customer
      */
-    public function iImpersonateCustomer(CustomerInterface $customer)
+    public function iImpersonateCustomer(CustomerInterface $customer): void
     {
         $this->impersonateUserPage->tryToOpen(['username' => $customer->getEmail()]);
     }
@@ -85,7 +85,7 @@ final class ImpersonatingCustomersContext implements Context
     /**
      * @Then I should be unable to impersonate them
      */
-    public function iShouldBeUnableToImpersonateThem()
+    public function iShouldBeUnableToImpersonateThem(): void
     {
         Assert::false($this->customerShowPage->hasImpersonateButton());
     }
@@ -93,7 +93,7 @@ final class ImpersonatingCustomersContext implements Context
     /**
      * @Then I should still be able to access the administration dashboard
      */
-    public function iShouldBeAbleToAccessAdministrationDashboard()
+    public function iShouldBeAbleToAccessAdministrationDashboard(): void
     {
         $this->dashboardPage->open();
     }
@@ -101,7 +101,7 @@ final class ImpersonatingCustomersContext implements Context
     /**
      * @Then I should be logged in as :fullName
      */
-    public function iShouldBeLoggedInAs($fullName)
+    public function iShouldBeLoggedInAs($fullName): void
     {
         Assert::true($this->homePage->hasLogoutButton());
         Assert::contains($this->homePage->getFullName(), $fullName);
@@ -110,7 +110,7 @@ final class ImpersonatingCustomersContext implements Context
     /**
      * @Then I should not be logged in as :fullName
      */
-    public function iShouldNotBeLoggedInAs($fullName)
+    public function iShouldNotBeLoggedInAs($fullName): void
     {
         $this->homePage->open();
 
@@ -121,7 +121,7 @@ final class ImpersonatingCustomersContext implements Context
     /**
      * @Then I should see that impersonating :email was successful
      */
-    public function iShouldSeeThatImpersonatingWasSuccessful($email)
+    public function iShouldSeeThatImpersonatingWasSuccessful($email): void
     {
         Assert::contains($this->customerShowPage->getSuccessFlashMessage(), $email);
     }

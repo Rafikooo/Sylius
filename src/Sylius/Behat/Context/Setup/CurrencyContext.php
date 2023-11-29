@@ -34,7 +34,7 @@ final class CurrencyContext implements Context
     /**
      * @Given the store has currency :currencyCode
      */
-    public function theStoreHasCurrency($currencyCode)
+    public function theStoreHasCurrency($currencyCode): void
     {
         $currency = $this->createCurrency($currencyCode);
 
@@ -46,7 +46,7 @@ final class CurrencyContext implements Context
      * @Given the store has currency :currencyCode and :secondCurrencyCode
      * @Given the store has currency :currencyCode, :secondCurrencyCode and :thirdCurrencyCode
      */
-    public function theStoreHasCurrencyAnd($currencyCode, $secondCurrencyCode, $thirdCurrencyCode = null)
+    public function theStoreHasCurrencyAnd($currencyCode, $secondCurrencyCode, $thirdCurrencyCode = null): void
     {
         $this->saveCurrency($this->createCurrency($currencyCode));
         $this->saveCurrency($this->createCurrency($secondCurrencyCode));
@@ -59,7 +59,7 @@ final class CurrencyContext implements Context
     /**
      * @Given the currency :currencyCode has been disabled
      */
-    public function theStoreHasDisabledCurrency($currencyCode)
+    public function theStoreHasDisabledCurrency($currencyCode): void
     {
         $currency = $this->provideCurrency($currencyCode);
 
@@ -71,7 +71,7 @@ final class CurrencyContext implements Context
      * @Given /^(that channel|"[^"]+" channel)(?: also|) allows to shop using "([^"]+)" and "([^"]+)" currencies$/
      * @Given /^(that channel)(?: also|) allows to shop using "([^"]+)", "([^"]+)" and "([^"]+)" currencies$/
      */
-    public function thatChannelAllowsToShopUsingAndCurrencies(ChannelInterface $channel, ...$currenciesCodes)
+    public function thatChannelAllowsToShopUsingAndCurrencies(ChannelInterface $channel, ...$currenciesCodes): void
     {
         foreach ($currenciesCodes as $currencyCode) {
             $channel->addCurrency($this->provideCurrency($currencyCode));

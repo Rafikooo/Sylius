@@ -189,7 +189,7 @@ final class LoginContext implements Context
      * @When I log out
      * @When the customer logged out
      */
-    public function iLogOut()
+    public function iLogOut(): void
     {
         $this->apiSecurityClient->logOut();
     }

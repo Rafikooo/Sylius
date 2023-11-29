@@ -749,7 +749,7 @@ final class CatalogPromotionContext implements Context
      * @Given /^the ("[^"]+" catalog promotion) is active$/
      * @Given /^(this catalog promotion) is active$/
      */
-    public function theCatalogPromotionIsActive(CatalogPromotionInterface $catalogPromotion)
+    public function theCatalogPromotionIsActive(CatalogPromotionInterface $catalogPromotion): void
     {
         if (CatalogPromotionStates::STATE_ACTIVE === $catalogPromotion->getState()) {
             return;

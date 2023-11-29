@@ -94,7 +94,7 @@ final class TaxationContext implements Context
     /**
      * @Given the store has included in price :taxRateName tax rate of :taxRateAmount% for :taxCategoryName within the :zone zone
      */
-    public function storeHasIncludedInPriceTaxRateWithinZone($taxRateName, $taxRateAmount, $taxCategoryName, ZoneInterface $zone)
+    public function storeHasIncludedInPriceTaxRateWithinZone($taxRateName, $taxRateAmount, $taxCategoryName, ZoneInterface $zone): void
     {
         $this->storeHasTaxRateWithinZone($taxRateName, $taxRateAmount, $taxCategoryName, $zone, null, true);
     }
@@ -104,7 +104,7 @@ final class TaxationContext implements Context
      * @Given the store has a tax category :name
      * @Given the store has a tax category :name also
      */
-    public function theStoreHasTaxCategoryWithCode($name, $code = null)
+    public function theStoreHasTaxCategoryWithCode($name, $code = null): void
     {
         $taxCategory = $this->createTaxCategory($name, $code);
 
@@ -124,7 +124,7 @@ final class TaxationContext implements Context
     /**
      * @Given the store does not have any categories defined
      */
-    public function theStoreDoesNotHaveAnyCategoriesDefined()
+    public function theStoreDoesNotHaveAnyCategoriesDefined(): void
     {
         $taxCategories = $this->taxCategoryRepository->findAll();
 
@@ -136,7 +136,7 @@ final class TaxationContext implements Context
     /**
      * @Given /^the ("[^"]+" tax rate) has changed to ([^"]+)%$/
      */
-    public function theTaxRateIsOfAmount(TaxRateInterface $taxRate, $amount)
+    public function theTaxRateIsOfAmount(TaxRateInterface $taxRate, $amount): void
     {
         $taxRate->setAmount((float) $this->getAmountFromString($amount));
 

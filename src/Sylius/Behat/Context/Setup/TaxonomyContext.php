@@ -47,7 +47,7 @@ final class TaxonomyContext implements Context
      * @Given the store classifies its products as :firstTaxonName, :secondTaxonName and :thirdTaxonName
      * @Given the store classifies its products as :firstTaxonName, :secondTaxonName, :thirdTaxonName and :fourthTaxonName
      */
-    public function storeClassifiesItsProductsAs(...$taxonsNames)
+    public function storeClassifiesItsProductsAs(...$taxonsNames): void
     {
         foreach ($taxonsNames as $taxonName) {
             $this->taxonRepository->add($this->createTaxon($taxonName));
@@ -57,7 +57,7 @@ final class TaxonomyContext implements Context
     /**
      * @Given /^the store has taxonomy named "([^"]+)" in ("[^"]+" locale) and "([^"]+)" in ("[^"]+" locale)$/
      */
-    public function theStoreHasTaxonomyNamedInAndIn($firstName, $firstLocale, $secondName, $secondLocale)
+    public function theStoreHasTaxonomyNamedInAndIn($firstName, $firstLocale, $secondName, $secondLocale): void
     {
         $translationMap = [
             $firstLocale => $firstName,
@@ -95,7 +95,7 @@ final class TaxonomyContext implements Context
     /**
      * @Given /^the ("[^"]+" taxon)(?:| also) has an image "([^"]+)" with "([^"]+)" type$/
      */
-    public function theTaxonHasAnImageWithType(TaxonInterface $taxon, $imagePath, $imageType)
+    public function theTaxonHasAnImageWithType(TaxonInterface $taxon, $imagePath, $imageType): void
     {
         $filesPath = $this->getParameter('files_path');
 

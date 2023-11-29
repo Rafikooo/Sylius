@@ -33,7 +33,7 @@ final class LocaleContext implements Context
      * @Then I should still be viewing the administration panel in :localeCode
      * @Then they should be viewing the administration panel in :localeCode
      */
-    public function iShouldBeViewingTheAdministrationPanelIn($localeCode)
+    public function iShouldBeViewingTheAdministrationPanelIn($localeCode): void
     {
         $this->dashboardPage->open();
 

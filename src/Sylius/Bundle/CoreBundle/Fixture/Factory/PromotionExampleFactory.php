@@ -16,7 +16,6 @@ namespace Sylius\Bundle\CoreBundle\Fixture\Factory;
 use Faker\Factory;
 use Faker\Generator;
 use Sylius\Bundle\CoreBundle\Fixture\OptionsResolver\LazyOption;
-use Sylius\Component\Channel\Model\ChannelInterface;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Sylius\Component\Core\Formatter\StringInflector;
 use Sylius\Component\Core\Model\PromotionCouponInterface;

@@ -27,7 +27,7 @@ final class CurrencyContext implements Context
      * @When I switch to the :currencyCode currency
      * @Given I changed my currency to :currencyCode
      */
-    public function iSwitchTheCurrencyToTheCurrency($currencyCode)
+    public function iSwitchTheCurrencyToTheCurrency($currencyCode): void
     {
         $this->homePage->open();
         $this->homePage->switchCurrency($currencyCode);
@@ -36,7 +36,7 @@ final class CurrencyContext implements Context
     /**
      * @Then I should (still) shop using the :currencyCode currency
      */
-    public function iShouldShopUsingTheCurrency($currencyCode)
+    public function iShouldShopUsingTheCurrency($currencyCode): void
     {
         $this->homePage->open();
 
@@ -46,7 +46,7 @@ final class CurrencyContext implements Context
     /**
      * @Then I should be able to shop using the :currencyCode currency
      */
-    public function iShouldBeAbleToShopUsingTheCurrency($currencyCode)
+    public function iShouldBeAbleToShopUsingTheCurrency($currencyCode): void
     {
         $this->homePage->open();
 
@@ -56,7 +56,7 @@ final class CurrencyContext implements Context
     /**
      * @Then I should not be able to shop using the :currencyCode currency
      */
-    public function iShouldNotBeAbleToShopUsingTheCurrency($currencyCode)
+    public function iShouldNotBeAbleToShopUsingTheCurrency($currencyCode): void
     {
         $this->homePage->open();
 

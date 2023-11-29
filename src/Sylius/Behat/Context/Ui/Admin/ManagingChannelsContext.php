@@ -57,7 +57,7 @@ final class ManagingChannelsContext implements Context
      * @When I specify its code as :code
      * @When I do not specify its code
      */
-    public function iSpecifyItsCodeAs(string $code = null)
+    public function iSpecifyItsCodeAs(string $code = null): void
     {
         $this->createPage->specifyCode($code ?? '');
     }

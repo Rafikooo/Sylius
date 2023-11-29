@@ -47,7 +47,7 @@ final class ProductOptionContext implements Context
     /**
      * @Given /^the store has(?:| also) a product option "([^"]+)" at position ([^"]+)$/
      */
-    public function theStoreHasAProductOptionAtPosition($name, $position)
+    public function theStoreHasAProductOptionAtPosition($name, $position): void
     {
         $this->createProductOption($name, null, $position);
     }

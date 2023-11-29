@@ -33,7 +33,7 @@ final class CustomerGroupContext implements Context
      * @Given the store has a customer group :name
      * @Given the store has a customer group :name with :code code
      */
-    public function theStoreHasACustomerGroup($name, $code = null)
+    public function theStoreHasACustomerGroup($name, $code = null): void
     {
         $this->createCustomerGroup($name, $code);
     }

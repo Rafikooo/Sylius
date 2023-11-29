@@ -282,5 +282,10 @@
             <argument type="service" id="Sylius\Behat\Client\ResponseCheckerInterface" />
             <argument type="service" id="sylius.behat.shared_storage" />
         </service>
+
+        <service id="Sylius\Behat\Context\Api\Admin\DashboardContext">
+            <argument type="service" id="sylius.behat.api_platform_client.admin" />
+            <argument type="service" id="Sylius\Behat\Client\ResponseCheckerInterface" />
+        </service>
     </services>
 </container>

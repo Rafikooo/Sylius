@@ -41,7 +41,7 @@ final class ProductAssociationContext implements Context
      * @Given the store has (also) a product association type :name
      * @Given the store has (also) a product association type :name with a code :code
      */
-    public function theStoreHasAProductAssociationType($name, $code = null)
+    public function theStoreHasAProductAssociationType($name, $code = null): void
     {
         $this->createProductAssociationType($name, $code);
     }
@@ -49,7 +49,7 @@ final class ProductAssociationContext implements Context
     /**
      * @Given /^the store has(?:| also) a product association type named "([^"]+)" in ("[^"]+" locale) and "([^"]+)" in ("[^"]+" locale)$/
      */
-    public function itHasVariantNamedInAndIn($firstName, $firstLocale, $secondName, $secondLocale)
+    public function itHasVariantNamedInAndIn($firstName, $firstLocale, $secondName, $secondLocale): void
     {
         $productAssociationType = $this->createProductAssociationType($firstName);
 
@@ -64,7 +64,7 @@ final class ProductAssociationContext implements Context
     /**
      * @Given the store has :firstName and :secondName product association types
      */
-    public function theStoreHasProductAssociationTypes(...$names)
+    public function theStoreHasProductAssociationTypes(...$names): void
     {
         foreach ($names as $name) {
             $this->createProductAssociationType($name);
@@ -74,7 +74,7 @@ final class ProductAssociationContext implements Context
     /**
      * @Given the store has :firstName product association type
      */
-    public function theStoreHasProductAssociationType($name)
+    public function theStoreHasProductAssociationType($name): void
     {
         $this->createProductAssociationType($name);
     }

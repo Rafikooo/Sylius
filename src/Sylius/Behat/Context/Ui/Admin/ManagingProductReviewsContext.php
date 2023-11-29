@@ -34,7 +34,7 @@ final class ManagingProductReviewsContext implements Context
      * @When I browse product reviews
      * @When I want to browse product reviews
      */
-    public function iWantToBrowseProductReviews()
+    public function iWantToBrowseProductReviews(): void
     {
         $this->indexPage->open();
     }
@@ -74,7 +74,7 @@ final class ManagingProductReviewsContext implements Context
     /**
      * @Then I should (also) see the product review :title in the list
      */
-    public function iShouldSeeTheProductReviewTitleInTheList($title)
+    public function iShouldSeeTheProductReviewTitleInTheList($title): void
     {
         Assert::true($this->indexPage->isSingleResourceOnPage(['title' => $title]));
     }
@@ -91,7 +91,7 @@ final class ManagingProductReviewsContext implements Context
     /**
      * @When I want to modify the :productReview product review
      */
-    public function iWantToModifyTheProductReview(ReviewInterface $productReview)
+    public function iWantToModifyTheProductReview(ReviewInterface $productReview): void
     {
         $this->updatePage->open(['id' => $productReview->getId()]);
     }
@@ -100,7 +100,7 @@ final class ManagingProductReviewsContext implements Context
      * @When I change its title to :title
      * @When I remove its title
      */
-    public function iChangeItsTitleTo($title = null)
+    public function iChangeItsTitleTo($title = null): void
     {
         $this->updatePage->specifyTitle($title ?? '');
     }
@@ -109,7 +109,7 @@ final class ManagingProductReviewsContext implements Context
      * @When I change its comment to :comment
      * @When I remove its comment
      */
-    public function iChangeItsCommentTo($comment = null)
+    public function iChangeItsCommentTo($comment = null): void
     {
         $this->updatePage->specifyComment($comment ?? '');
     }
@@ -118,7 +118,7 @@ final class ManagingProductReviewsContext implements Context
      * @When I save my changes
      * @When I try to save my changes
      */
-    public function iSaveMyChanges()
+    public function iSaveMyChanges(): void
     {
         $this->updatePage->saveChanges();
     }
@@ -126,7 +126,7 @@ final class ManagingProductReviewsContext implements Context
     /**
      * @Then /^this product review (comment|title) should be "([^"]+)"$/
      */
-    public function thisProductReviewElementShouldBeValue($element, $value)
+    public function thisProductReviewElementShouldBeValue($element, $value): void
     {
         $this->assertElementValue($element, $value);
     }
@@ -134,7 +134,7 @@ final class ManagingProductReviewsContext implements Context
     /**
      * @Then this product review rating should be :rating
      */
-    public function thisProductReviewRatingShouldBe($rating)
+    public function thisProductReviewRatingShouldBe($rating): void
     {
         Assert::same($this->updatePage->getRating(), $rating);
     }
@@ -142,7 +142,7 @@ final class ManagingProductReviewsContext implements Context
     /**
      * @When I choose :rating as its rating
      */
-    public function iChooseAsItsRating($rating)
+    public function iChooseAsItsRating($rating): void
     {
         $this->updatePage->chooseRating($rating);
     }
@@ -150,7 +150,7 @@ final class ManagingProductReviewsContext implements Context
     /**
      * @Then I should be editing review of product :productName
      */
-    public function iShouldBeEditingReviewOfProduct($productName)
+    public function iShouldBeEditingReviewOfProduct($productName): void
     {
         Assert::same($this->updatePage->getProductName(), $productName);
     }
@@ -158,7 +158,7 @@ final class ManagingProductReviewsContext implements Context
     /**
      * @Then I should see the customer's name :customerName
      */
-    public function iShouldSeeTheCustomerSName($customerName)
+    public function iShouldSeeTheCustomerSName($customerName): void
     {
         Assert::same($this->updatePage->getCustomerName(), $customerName);
     }
@@ -166,7 +166,7 @@ final class ManagingProductReviewsContext implements Context
     /**
      * @When I accept the :productReview product review
      */
-    public function iAcceptTheProductReview(ReviewInterface $productReview)
+    public function iAcceptTheProductReview(ReviewInterface $productReview): void
     {
         $this->indexPage->accept(['title' => $productReview->getTitle()]);
     }
@@ -174,7 +174,7 @@ final class ManagingProductReviewsContext implements Context
     /**
      * @When I reject the :productReview product review
      */
-    public function iRejectTheProductReview(ReviewInterface $productReview)
+    public function iRejectTheProductReview(ReviewInterface $productReview): void
     {
         $this->indexPage->reject(['title' => $productReview->getTitle()]);
     }
@@ -182,7 +182,7 @@ final class ManagingProductReviewsContext implements Context
     /**
      * @Then /^(this product review) status should be "([^"]+)"$/
      */
-    public function thisProductReviewStatusShouldBe(ReviewInterface $productReview, $status)
+    public function thisProductReviewStatusShouldBe(ReviewInterface $productReview, $status): void
     {
         Assert::true($this->indexPage->isSingleResourceOnPage([
             'title' => $productReview->getTitle(),
@@ -193,7 +193,7 @@ final class ManagingProductReviewsContext implements Context
     /**
      * @Then /^I should be notified that it has been successfully (accepted|rejected)$/
      */
-    public function iShouldBeNotifiedThatItHasBeenSuccessfullyUpdated($action)
+    public function iShouldBeNotifiedThatItHasBeenSuccessfullyUpdated($action): void
     {
         $this->notificationChecker->checkNotification(
             sprintf('Review has been successfully %s.', $action),
@@ -204,7 +204,7 @@ final class ManagingProductReviewsContext implements Context
     /**
      * @When I delete the :productReview product review
      */
-    public function iDeleteTheProductReview(ReviewInterface $productReview)
+    public function iDeleteTheProductReview(ReviewInterface $productReview): void
     {
         $this->indexPage->open();
         $this->indexPage->deleteResourceOnPage(['title' => $productReview->getTitle()]);
@@ -213,7 +213,7 @@ final class ManagingProductReviewsContext implements Context
     /**
      * @Then /^(this product review) should no longer exist in the registry$/
      */
-    public function thisProductReviewShouldNoLongerExistInTheRegistry(ReviewInterface $productReview)
+    public function thisProductReviewShouldNoLongerExistInTheRegistry(ReviewInterface $productReview): void
     {
         Assert::false($this->indexPage->isSingleResourceOnPage(['title' => $productReview->getTitle()]));
     }
@@ -221,7 +221,7 @@ final class ManagingProductReviewsContext implements Context
     /**
      * @Then I should be notified that :element is required
      */
-    public function iShouldBeNotifiedThatElementIsRequired($element)
+    public function iShouldBeNotifiedThatElementIsRequired($element): void
     {
         $this->assertFieldValidationMessage($element, sprintf('Review %s should not be blank.', $element));
     }
@@ -229,7 +229,7 @@ final class ManagingProductReviewsContext implements Context
     /**
      * @Then /^this product review should still be titled "([^"]+)"$/
      */
-    public function thisProductReviewTitleShouldBeTitled($productReviewTitle)
+    public function thisProductReviewTitleShouldBeTitled($productReviewTitle): void
     {
         $this->iWantToBrowseProductReviews();
 
@@ -239,7 +239,7 @@ final class ManagingProductReviewsContext implements Context
     /**
      * @Then /^(this product review) should still have a comment "([^"]+)"$/
      */
-    public function thisProductReviewShouldStillHaveAComment(ReviewInterface $productReview, $comment)
+    public function thisProductReviewShouldStillHaveAComment(ReviewInterface $productReview, $comment): void
     {
         $this->iWantToModifyTheProductReview($productReview);
 

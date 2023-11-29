@@ -46,7 +46,7 @@ final class ProductAttributeContext implements Context
     /**
      * @Given the store has a :type product attribute :name with code :code
      */
-    public function theStoreHasAProductAttributeWithCode($type, $name, $code)
+    public function theStoreHasAProductAttributeWithCode($type, $name, $code): void
     {
         $productAttribute = $this->createProductAttribute($type, $name, $code);
 
@@ -56,7 +56,7 @@ final class ProductAttributeContext implements Context
     /**
      * @Given the store has( also) a :type product attribute :name at position :position
      */
-    public function theStoreHasAProductAttributeWithPosition($type, $name, $position)
+    public function theStoreHasAProductAttributeWithPosition($type, $name, $position): void
     {
         $productAttribute = $this->createProductAttribute($type, $name);
         $productAttribute->setPosition((int) $position);
@@ -248,7 +248,7 @@ final class ProductAttributeContext implements Context
     /**
      * @Given /^(this product attribute) has set min value as (\d+) and max value as (\d+)$/
      */
-    public function thisAttributeHasSetMinValueAsAndMaxValueAs(ProductAttributeInterface $attribute, $min, $max)
+    public function thisAttributeHasSetMinValueAsAndMaxValueAs(ProductAttributeInterface $attribute, $min, $max): void
     {
         $attribute->setConfiguration(['min' => $min, 'max' => $max]);
 
@@ -317,7 +317,7 @@ final class ProductAttributeContext implements Context
     /**
      * @Given /^(this product) has a percent attribute "([^"]+)" with value ([^"]+)%$/
      */
-    public function thisProductHasPercentAttributeWithValue(ProductInterface $product, $productAttributeName, $value)
+    public function thisProductHasPercentAttributeWithValue(ProductInterface $product, $productAttributeName, $value): void
     {
         $attribute = $this->provideProductAttribute('percent', $productAttributeName);
         $attributeValue = $this->createProductAttributeValue($value / 100, $attribute);

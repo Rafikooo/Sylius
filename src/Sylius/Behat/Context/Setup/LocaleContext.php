@@ -39,7 +39,7 @@ final class LocaleContext implements Context
      * @Given the store is( also) available in :localeCode
      * @Given the locale :localeCode is enabled
      */
-    public function theStoreHasLocale($localeCode)
+    public function theStoreHasLocale($localeCode): void
     {
         $locale = $this->provideLocale($localeCode);
 
@@ -67,7 +67,7 @@ final class LocaleContext implements Context
     /**
      * @Given the locale :localeCode does not exist in the store
      */
-    public function theStoreDoesNotHaveLocale($localeCode)
+    public function theStoreDoesNotHaveLocale($localeCode): void
     {
         /** @var LocaleInterface $locale */
         $locale = $this->localeRepository->findOneBy(['code' => $localeCode]);
@@ -83,7 +83,7 @@ final class LocaleContext implements Context
      * @Given /^(this channel) allows to shop using the "([^"]+)" locale$/
      * @Given /^(this channel) allows to shop using "([^"]+)" and "([^"]+)" locales$/
      */
-    public function thatChannelAllowsToShopUsingAndLocales(ChannelInterface $channel, ...$localesNames)
+    public function thatChannelAllowsToShopUsingAndLocales(ChannelInterface $channel, ...$localesNames): void
     {
         foreach ($channel->getLocales() as $locale) {
             $channel->removeLocale($locale);

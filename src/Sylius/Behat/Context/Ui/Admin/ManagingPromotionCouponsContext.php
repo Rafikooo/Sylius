@@ -43,7 +43,7 @@ final class ManagingPromotionCouponsContext implements Context
      * @When /^I want to view all coupons of (this promotion)$/
      * @When /^I browse all coupons of ("[^"]+" promotion)$/
      */
-    public function iWantToViewAllCouponsOfThisPromotion(PromotionInterface $promotion)
+    public function iWantToViewAllCouponsOfThisPromotion(PromotionInterface $promotion): void
     {
         $this->indexPage->open(['promotionId' => $promotion->getId()]);
     }
@@ -51,7 +51,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @When /^I want to create a new coupon for (this promotion)$/
      */
-    public function iWantToCreateANewCouponForThisPromotion(PromotionInterface $promotion)
+    public function iWantToCreateANewCouponForThisPromotion(PromotionInterface $promotion): void
     {
         $this->createPage->open(['promotionId' => $promotion->getId()]);
     }
@@ -59,7 +59,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @When /^I want to modify the ("[^"]+" coupon) for (this promotion)$/
      */
-    public function iWantToModifyTheCoupon(PromotionCouponInterface $coupon, PromotionInterface $promotion)
+    public function iWantToModifyTheCoupon(PromotionCouponInterface $coupon, PromotionInterface $promotion): void
     {
         $this->updatePage->open(['id' => $coupon->getId(), 'promotionId' => $promotion->getId()]);
     }
@@ -67,7 +67,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @When /^I want to generate new coupons for (this promotion)$/
      */
-    public function iWantToGenerateNewCouponsForThisPromotion(PromotionInterface $promotion)
+    public function iWantToGenerateNewCouponsForThisPromotion(PromotionInterface $promotion): void
     {
         $this->generatePage->open(['promotionId' => $promotion->getId()]);
     }
@@ -100,7 +100,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @When /^I limit generated coupons usage to (\d+) times$/
      */
-    public function iSetGeneratedCouponsUsageLimitTo(int $limit)
+    public function iSetGeneratedCouponsUsageLimitTo(int $limit): void
     {
         $this->generatePage->setUsageLimit($limit);
     }
@@ -108,7 +108,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @When I make generated coupons valid until :date
      */
-    public function iMakeGeneratedCouponsValidUntil(\DateTimeInterface $date)
+    public function iMakeGeneratedCouponsValidUntil(\DateTimeInterface $date): void
     {
         $this->generatePage->setExpiresAt($date);
     }
@@ -117,7 +117,7 @@ final class ManagingPromotionCouponsContext implements Context
      * @When I specify its code as :code
      * @When I do not specify its code
      */
-    public function iSpecifyItsCodeAs($code = null)
+    public function iSpecifyItsCodeAs($code = null): void
     {
         $this->createPage->specifyCode($code ?? '');
     }
@@ -125,7 +125,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @When I limit its usage to :limit times
      */
-    public function iLimitItsUsageLimitTo(int $limit)
+    public function iLimitItsUsageLimitTo(int $limit): void
     {
         $this->createPage->setUsageLimit($limit);
     }
@@ -133,7 +133,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @When I change its usage limit to :limit
      */
-    public function iChangeItsUsageLimitTo($limit)
+    public function iChangeItsUsageLimitTo($limit): void
     {
         $this->updatePage->setUsageLimit($limit);
     }
@@ -151,7 +151,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @When /^I limit its per customer usage to ([^"]+) times$/
      */
-    public function iLimitItsPerCustomerUsageLimitTo(int $limit)
+    public function iLimitItsPerCustomerUsageLimitTo(int $limit): void
     {
         $this->createPage->setCustomerUsageLimit($limit);
     }
@@ -159,7 +159,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @When I change its per customer usage limit to :limit
      */
-    public function iChangeItsPerCustomerUsageLimitTo(int $limit)
+    public function iChangeItsPerCustomerUsageLimitTo(int $limit): void
     {
         $this->updatePage->setCustomerUsageLimit($limit);
     }
@@ -167,7 +167,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @When I make it valid until :date
      */
-    public function iMakeItValidUntil(\DateTimeInterface $date)
+    public function iMakeItValidUntil(\DateTimeInterface $date): void
     {
         $this->createPage->setExpiresAt($date);
     }
@@ -175,7 +175,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @When I change expires date to :date
      */
-    public function iChangeExpiresDateTo(\DateTimeInterface $date)
+    public function iChangeExpiresDateTo(\DateTimeInterface $date): void
     {
         $this->updatePage->setExpiresAt($date);
     }
@@ -184,7 +184,7 @@ final class ManagingPromotionCouponsContext implements Context
      * @When I add it
      * @When I try to add it
      */
-    public function iAddIt()
+    public function iAddIt(): void
     {
         $this->createPage->create();
     }
@@ -192,7 +192,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @When I save my changes
      */
-    public function iSaveMyChanges()
+    public function iSaveMyChanges(): void
     {
         $this->updatePage->saveChanges();
     }
@@ -203,7 +203,7 @@ final class ManagingPromotionCouponsContext implements Context
      * @When I try to generate it
      * @When I try to generate these coupons
      */
-    public function iGenerateIt()
+    public function iGenerateIt(): void
     {
         $this->generatePage->generate();
     }
@@ -212,7 +212,7 @@ final class ManagingPromotionCouponsContext implements Context
      * @When /^I delete ("[^"]+" coupon) related to (this promotion)$/
      * @When /^I try to delete ("[^"]+" coupon) related to (this promotion)$/
      */
-    public function iDeleteCouponRelatedToThisPromotion(PromotionCouponInterface $coupon, PromotionInterface $promotion)
+    public function iDeleteCouponRelatedToThisPromotion(PromotionCouponInterface $coupon, PromotionInterface $promotion): void
     {
         $this->indexPage->open(['promotionId' => $promotion->getId()]);
         $this->indexPage->deleteResourceOnPage(['code' => $coupon->getCode()]);
@@ -317,7 +317,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @Then /^there should be coupon with code "([^"]+)"$/
      */
-    public function thereShouldBeCouponWithCode($code)
+    public function thereShouldBeCouponWithCode($code): void
     {
         Assert::true($this->indexPage->isSingleResourceOnPage(['code' => $code]));
     }
@@ -325,7 +325,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @Then this coupon should be valid until :date
      */
-    public function thisCouponShouldBeValidUntil(\DateTimeInterface $date)
+    public function thisCouponShouldBeValidUntil(\DateTimeInterface $date): void
     {
         Assert::true($this->indexPage->isSingleResourceOnPage(['expiresAt' => date('d-m-Y', $date->getTimestamp())]));
     }
@@ -333,7 +333,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @Then /^this coupon should have (\d+) usage limit$/
      */
-    public function thisCouponShouldHaveUsageLimit($limit)
+    public function thisCouponShouldHaveUsageLimit($limit): void
     {
         Assert::true($this->indexPage->isSingleResourceOnPage(['usageLimit' => $limit]));
     }
@@ -341,7 +341,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @Then /^("[^"]+" coupon) should be used (\d+) time(?:|s)$/
      */
-    public function couponShouldHaveUsageLimit(PromotionCouponInterface $promotionCoupon, $used)
+    public function couponShouldHaveUsageLimit(PromotionCouponInterface $promotionCoupon, $used): void
     {
         Assert::true($this->indexPage->isSingleResourceOnPage(['code' => $promotionCoupon->getCode(), 'used' => $used]));
     }
@@ -349,7 +349,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @Then /^this coupon should have (\d+) per customer usage limit$/
      */
-    public function thisCouponShouldHavePerCustomerUsageLimit($limit)
+    public function thisCouponShouldHavePerCustomerUsageLimit($limit): void
     {
         Assert::true($this->indexPage->isSingleResourceOnPage(['perCustomerUsageLimit' => $limit]));
     }
@@ -357,7 +357,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @Then the code field should be disabled
      */
-    public function theCodeFieldShouldBeDisabled()
+    public function theCodeFieldShouldBeDisabled(): void
     {
         Assert::true($this->updatePage->isCodeDisabled());
     }
@@ -365,7 +365,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @Then /^I should be notified that coupon with this code already exists$/
      */
-    public function iShouldBeNotifiedThatCouponWithThisCodeAlreadyExists()
+    public function iShouldBeNotifiedThatCouponWithThisCodeAlreadyExists(): void
     {
         /** @var CreatePageInterface|UpdatePageInterface $currentPage */
         $currentPage = $this->currentPageResolver->getCurrentPageWithForm([$this->createPage, $this->updatePage]);
@@ -376,7 +376,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @Then I should be notified that :element is required
      */
-    public function iShouldBeNotifiedThatIsRequired($element)
+    public function iShouldBeNotifiedThatIsRequired($element): void
     {
         /** @var CreatePageInterface|UpdatePageInterface $currentPage */
         $currentPage = $this->currentPageResolver->getCurrentPageWithForm([$this->createPage, $this->updatePage]);
@@ -387,7 +387,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @Then I should be notified that generate amount is required
      */
-    public function iShouldBeNotifiedThatGenerateAmountIsRequired()
+    public function iShouldBeNotifiedThatGenerateAmountIsRequired(): void
     {
         Assert::true($this->generatePage->checkAmountValidation('Please enter amount of coupons to generate.'));
     }
@@ -395,7 +395,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @Then I should be notified that generate code length is required
      */
-    public function iShouldBeNotifiedThatCodeLengthIsRequired()
+    public function iShouldBeNotifiedThatCodeLengthIsRequired(): void
     {
         Assert::true($this->generatePage->checkCodeLengthValidation('Please enter coupon code length.'));
     }
@@ -411,7 +411,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @Then /^there should still be only one coupon with code "([^"]+)" related to (this promotion)$/
      */
-    public function thereShouldStillBeOnlyOneCouponWithCodeRelatedTo($code, PromotionInterface $promotion)
+    public function thereShouldStillBeOnlyOneCouponWithCodeRelatedTo($code, PromotionInterface $promotion): void
     {
         $this->indexPage->open(['promotionId' => $promotion->getId()]);
 
@@ -421,7 +421,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @Then I should be notified that coupon usage limit must be at least one
      */
-    public function iShouldBeNotifiedThatCouponUsageLimitMustBeAtLeast()
+    public function iShouldBeNotifiedThatCouponUsageLimitMustBeAtLeast(): void
     {
         /** @var CreatePageInterface|UpdatePageInterface $currentPage */
         $currentPage = $this->currentPageResolver->getCurrentPageWithForm([$this->createPage, $this->updatePage]);
@@ -443,7 +443,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @Then /^(this coupon) should no longer exist in the coupon registry$/
      */
-    public function couponShouldNotExistInTheRegistry(PromotionCouponInterface $coupon)
+    public function couponShouldNotExistInTheRegistry(PromotionCouponInterface $coupon): void
     {
         Assert::false($this->indexPage->isSingleResourceOnPage(['code' => $coupon->getCode()]));
     }
@@ -459,7 +459,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @Then I should be notified that it is in use and cannot be deleted
      */
-    public function iShouldBeNotifiedOfFailure()
+    public function iShouldBeNotifiedOfFailure(): void
     {
         $this->notificationChecker->checkNotification(
             'Error Cannot delete, the Promotion coupon is in use.',
@@ -470,7 +470,7 @@ final class ManagingPromotionCouponsContext implements Context
     /**
      * @Then /^(this coupon) should still exist in the registry$/
      */
-    public function couponShouldStillExistInTheRegistry(PromotionCouponInterface $coupon)
+    public function couponShouldStillExistInTheRegistry(PromotionCouponInterface $coupon): void
     {
         Assert::true($this->indexPage->isSingleResourceOnPage(['code' => $coupon->getCode()]));
     }

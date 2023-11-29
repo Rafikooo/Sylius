@@ -35,7 +35,7 @@ final class AddressContext implements Context
      * @Given /^(their) default (address is "[^"]+", "[^"]+", "[^"]+", "[^"]+" for "[^"]+")$/
      * @Given /^(their) default (address is "[^"]+", "[^"]+", "[^"]+", "[^"]+", "[^"]+", "[^"]+")$/
      */
-    public function theirDefaultAddressIs(CustomerInterface $customer, AddressInterface $address)
+    public function theirDefaultAddressIs(CustomerInterface $customer, AddressInterface $address): void
     {
         $this->setDefaultAddressOfCustomer($customer, $address);
     }
@@ -43,7 +43,7 @@ final class AddressContext implements Context
     /**
      * @Given /^(my) default address is of "([^"]+)"$/
      */
-    public function myDefaultAddressIsOf(ShopUserInterface $user, $fullName)
+    public function myDefaultAddressIsOf(ShopUserInterface $user, $fullName): void
     {
         [$firstName, $lastName] = explode(' ', $fullName);
 
@@ -60,7 +60,7 @@ final class AddressContext implements Context
     /**
      * @Given /^(I) have an (address "[^"]+", "[^"]+", "[^"]+", "[^"]+", "[^"]+"(?:|, "[^"]+")) in my address book$/
      */
-    public function iHaveAnAddressInAddressBook(ShopUserInterface $user, AddressInterface $address)
+    public function iHaveAnAddressInAddressBook(ShopUserInterface $user, AddressInterface $address): void
     {
         /** @var CustomerInterface $customer */
         $customer = $user->getCustomer();

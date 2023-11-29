@@ -133,15 +133,30 @@ final class ResponseChecker implements ResponseCheckerInterface
     }
 
     /** @param string|int $value */
-    public function hasSubResourceWithValue(Response $response, string $subResource, string $key, $value): bool
+    public function hasValueInAnySubresourceObjectCollection(Response $response, string $subResource, string $key, $value): bool
     {
         foreach ($this->getResponseContentValue($response, $subResource) as $resource) {
+            if (!is_array($resource)) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Expected subresource "%s" to be an array, got "%s"',
+                    $subResource,
+                    gettype($resource),
+                ));
+            }
+
             if ($resource[$key] === $value) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    public function hasValueInSubresourceObject(Response $response, string $subResource, string $key, int|string $expectedValue): bool
+    {
+        $resource = $this->getResponseContentValue($response, $subResource);
+
+        return $resource[$key] === $expectedValue;
     }
 
     /** @param string|array $value */

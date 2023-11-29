@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sylius\Bundle\AdminBundle\Provider;
 
 use Sylius\Bundle\MoneyBundle\Formatter\MoneyFormatterInterface;
-use Sylius\Component\Core\Dashboard\DashboardStatistics;
 use Sylius\Component\Core\Dashboard\DashboardStatisticsProviderInterface;
 use Sylius\Component\Core\Dashboard\Interval;
 use Sylius\Component\Core\Dashboard\SalesDataProviderInterface;
@@ -29,9 +28,23 @@ class StatisticsDataProvider implements StatisticsDataProviderInterface
     ) {
     }
 
-    public function getRawData(ChannelInterface $channel, \DateTimeInterface $startDate, \DateTimeInterface $endDate, string $interval): array
-    {
-        /** @var DashboardStatistics $statistics */
+    /** @return array<string, array<string, mixed>> */
+    public function getRawData(
+        ChannelInterface $channel,
+        \DateTimeInterface $startDate,
+        \DateTimeInterface $endDate,
+        string $interval,
+        bool|null $isCurrencyFormatted = true,
+    ): array {
+        if ($isCurrencyFormatted === null) {
+            trigger_deprecation(
+                'sylius/sylius',
+                '1.13',
+                'Not passing the $isCurrencyFormatted argument to %s() is deprecated and will not be prohibited in Sylius 2.0. Please pass it explicitly.',
+                __METHOD__,
+            );
+        }
+
         $statistics = $this->statisticsProvider->getStatisticsForChannelInPeriod($channel, $startDate, $endDate);
 
         $salesSummary = $this->salesDataProvider->getSalesSummary(
@@ -44,6 +57,9 @@ class StatisticsDataProvider implements StatisticsDataProviderInterface
         /** @var string $currencyCode */
         $currencyCode = $channel->getBaseCurrency()->getCode();
 
+        $totalSales = $isCurrencyFormatted ? $this->moneyFormatter->format($statistics->getTotalSales(), $currencyCode) : $statistics->getTotalSales();
+        $averageOrderValue = $isCurrencyFormatted ? $this->moneyFormatter->format($statistics->getAverageOrderValue(), $currencyCode) : $statistics->getAverageOrderValue();
+
         return [
             'sales_summary' => [
                 'intervals' => $salesSummary->getIntervals(),
@@ -54,10 +70,10 @@ class StatisticsDataProvider implements StatisticsDataProviderInterface
                 'channel_code' => $channel->getCode(),
             ],
             'statistics' => [
-                'total_sales' => $this->moneyFormatter->format($statistics->getTotalSales(), $currencyCode),
+                'total_sales' => $totalSales,
                 'number_of_new_orders' => $statistics->getNumberOfNewOrders(),
                 'number_of_new_customers' => $statistics->getNumberOfNewCustomers(),
-                'average_order_value' => $this->moneyFormatter->format($statistics->getAverageOrderValue(), $currencyCode),
+                'average_order_value' => $averageOrderValue,
             ],
         ];
     }

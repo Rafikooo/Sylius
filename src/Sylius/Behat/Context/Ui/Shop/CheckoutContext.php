@@ -50,7 +50,7 @@ final class CheckoutContext implements Context
     /**
      * @Given I was at the checkout summary step
      */
-    public function iWasAtTheCheckoutSummaryStep()
+    public function iWasAtTheCheckoutSummaryStep(): void
     {
         $this->addressingContext->iSpecifiedTheBillingAddress();
         $this->iProceedOrderWithShippingMethodAndPayment('Free', 'Offline');
@@ -69,7 +69,7 @@ final class CheckoutContext implements Context
      * @Given I have proceeded selecting :paymentMethodName payment method
      * @When I proceed selecting :paymentMethodName payment method
      */
-    public function iProceedSelectingPaymentMethod($paymentMethodName)
+    public function iProceedSelectingPaymentMethod($paymentMethodName): void
     {
         $this->iProceedSelectingBillingCountryAndShippingMethod();
         $this->paymentContext->iChoosePaymentMethod($paymentMethodName);
@@ -137,7 +137,7 @@ final class CheckoutContext implements Context
     /**
      * @When I go to the addressing step
      */
-    public function iGoToTheAddressingStep()
+    public function iGoToTheAddressingStep(): void
     {
         if ($this->selectShippingPage->isOpen()) {
             $this->selectShippingPage->changeAddressByStepLabel();
@@ -163,7 +163,7 @@ final class CheckoutContext implements Context
     /**
      * @When I go to the shipping step
      */
-    public function iGoToTheShippingStep()
+    public function iGoToTheShippingStep(): void
     {
         if ($this->selectPaymentPage->isOpen()) {
             $this->selectPaymentPage->changeShippingMethodByStepLabel();
@@ -183,7 +183,7 @@ final class CheckoutContext implements Context
     /**
      * @Then the subtotal of :item item should be :price
      */
-    public function theSubtotalOfItemShouldBe($item, $price)
+    public function theSubtotalOfItemShouldBe($item, $price): void
     {
         /** @var AddressPageInterface|SelectPaymentPageInterface|SelectShippingPageInterface|CompletePageInterface $currentPage */
         $currentPage = $this->currentPageResolver->getCurrentPageWithForm([

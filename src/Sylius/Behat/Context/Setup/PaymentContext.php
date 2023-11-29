@@ -42,7 +42,7 @@ final class PaymentContext implements Context
      * @Given the store (also )allows paying (with ):paymentMethodName
      * @Given the store (also )allows paying with :paymentMethodName at position :position
      */
-    public function storeAllowsPaying($paymentMethodName, $position = null)
+    public function storeAllowsPaying($paymentMethodName, $position = null): void
     {
         $this->createPaymentMethod($paymentMethodName, 'PM_' . StringInflector::nameToCode($paymentMethodName), 'Offline', 'Payment method', true, $position);
     }
@@ -65,7 +65,7 @@ final class PaymentContext implements Context
     /**
      * @Given /^the store allows paying (\w+) for (all channels)$/
      */
-    public function storeAllowsPayingForAllChannels($paymentMethodName, array $channels)
+    public function storeAllowsPayingForAllChannels($paymentMethodName, array $channels): void
     {
         $paymentMethod = $this->createPaymentMethod($paymentMethodName, StringInflector::nameToUppercaseCode($paymentMethodName), 'Offline', 'Payment method', false);
 
@@ -77,7 +77,7 @@ final class PaymentContext implements Context
     /**
      * @Given the store has (also) a payment method :paymentMethodName with a code :paymentMethodCode
      */
-    public function theStoreHasAPaymentMethodWithACode($paymentMethodName, $paymentMethodCode)
+    public function theStoreHasAPaymentMethodWithACode($paymentMethodName, $paymentMethodCode): void
     {
         $this->createPaymentMethod($paymentMethodName, $paymentMethodCode, 'Offline');
     }
@@ -104,7 +104,7 @@ final class PaymentContext implements Context
     /**
      * @Given /^(this payment method) is named "([^"]+)" in the "([^"]+)" locale$/
      */
-    public function thisPaymentMethodIsNamedIn(PaymentMethodInterface $paymentMethod, $name, $locale)
+    public function thisPaymentMethodIsNamedIn(PaymentMethodInterface $paymentMethod, $name, $locale): void
     {
         /** @var PaymentMethodTranslationInterface $translation */
         $translation = $this->paymentMethodTranslationFactory->createNew();
@@ -121,7 +121,7 @@ final class PaymentContext implements Context
      * @Given /^(this payment method) has been disabled$/
      * @When the payment method :paymentMethod gets disabled
      */
-    public function theStoreHasAPaymentMethodDisabled(PaymentMethodInterface $paymentMethod)
+    public function theStoreHasAPaymentMethodDisabled(PaymentMethodInterface $paymentMethod): void
     {
         $paymentMethod->disable();
 
@@ -131,7 +131,7 @@ final class PaymentContext implements Context
     /**
      * @Given /^(it) has instructions "([^"]+)"$/
      */
-    public function itHasInstructions(PaymentMethodInterface $paymentMethod, $instructions)
+    public function itHasInstructions(PaymentMethodInterface $paymentMethod, $instructions): void
     {
         $paymentMethod->setInstructions($instructions);
 
@@ -141,7 +141,7 @@ final class PaymentContext implements Context
     /**
      * @Given the store has :paymentMethodName payment method not assigned to any channel
      */
-    public function theStoreHasPaymentMethodNotAssignedToAnyChannel($paymentMethodName)
+    public function theStoreHasPaymentMethodNotAssignedToAnyChannel($paymentMethodName): void
     {
         $this->createPaymentMethod($paymentMethodName, 'PM_' . $paymentMethodName, 'Offline', 'Payment method', false);
     }
@@ -149,7 +149,7 @@ final class PaymentContext implements Context
     /**
      * @Given the payment method :paymentMethod requires authorization before capturing
      */
-    public function thePaymentMethodRequiresAuthorizationBeforeCapturing(PaymentMethodInterface $paymentMethod)
+    public function thePaymentMethodRequiresAuthorizationBeforeCapturing(PaymentMethodInterface $paymentMethod): void
     {
         $config = $paymentMethod->getGatewayConfig();
         $config->setConfig(array_merge($config->getConfig(), ['use_authorize' => true]));
@@ -177,7 +177,7 @@ final class PaymentContext implements Context
     /**
      * @Then /^the (latest order) should have a payment with state "([^"]+)"$/
      */
-    public function theLatestOrderHasAuthorizedPayment(OrderInterface $order, string $state)
+    public function theLatestOrderHasAuthorizedPayment(OrderInterface $order, string $state): void
     {
         $payment = $order->getLastPayment();
 

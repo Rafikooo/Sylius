@@ -52,6 +52,14 @@ final class ChannelContext implements Context
     }
 
     /**
+     * @Given the store's default channel is set to :channel
+     */
+    public function theStoresDefaultChannelIsSetTo(ChannelInterface $channel): void
+    {
+        $this->sharedStorage->set('channel', $channel);
+    }
+
+    /**
      * @Given /^the (channel "[^"]+") has ("([^"]+)" and "([^"]+)" taxons) excluded from showing the lowest price of discounted products$/
      */
     public function theTaxonAndTaxonAreExcludedFromShowingTheLowestPriceOfDiscountedProductsOnThisChannel(
@@ -69,7 +77,7 @@ final class ChannelContext implements Context
     /**
      * @Given the store operates on a single channel in "United States"
      */
-    public function storeOperatesOnASingleChannelInUnitedStates()
+    public function storeOperatesOnASingleChannelInUnitedStates(): void
     {
         $defaultData = $this->unitedStatesChannelFactory->create();
 
@@ -80,7 +88,7 @@ final class ChannelContext implements Context
     /**
      * @Given the store operates on a single channel in the "United States" named :channelIdentifier
      */
-    public function storeOperatesOnASingleChannelInTheUnitedStatesNamed(string $channelName)
+    public function storeOperatesOnASingleChannelInTheUnitedStatesNamed(string $channelName): void
     {
         $channelCode = StringInflector::nameToLowercaseCode($channelName);
         $defaultData = $this->unitedStatesChannelFactory->create($channelCode, $channelName);
@@ -93,7 +101,7 @@ final class ChannelContext implements Context
      * @Given the store operates on a single channel
      * @Given the store operates on a single channel in :currencyCode currency
      */
-    public function storeOperatesOnASingleChannel($currencyCode = null)
+    public function storeOperatesOnASingleChannel($currencyCode = null): void
     {
         $defaultData = $this->defaultChannelFactory->create(null, null, $currencyCode);
 
@@ -137,7 +145,7 @@ final class ChannelContext implements Context
     /**
      * @Given the channel :channel is enabled
      */
-    public function theChannelIsEnabled(ChannelInterface $channel)
+    public function theChannelIsEnabled(ChannelInterface $channel): void
     {
         $this->changeChannelState($channel, true);
     }
@@ -146,7 +154,7 @@ final class ChannelContext implements Context
      * @Given the channel :channel is disabled
      * @Given the channel :channel has been disabled
      */
-    public function theChannelIsDisabled(ChannelInterface $channel)
+    public function theChannelIsDisabled(ChannelInterface $channel): void
     {
         $this->changeChannelState($channel, false);
     }
@@ -154,7 +162,7 @@ final class ChannelContext implements Context
     /**
      * @Given /^the (channel "[^"]+") has showing the lowest price of discounted products (enabled|disabled)$/
      */
-    public function theChannelHasShowingTheLowestPriceOfDiscountedProducts(ChannelInterface $channel, string $visible)
+    public function theChannelHasShowingTheLowestPriceOfDiscountedProducts(ChannelInterface $channel, string $visible): void
     {
         $channel->getChannelPriceHistoryConfig()->setLowestPriceForDiscountedProductsVisible($visible === 'enabled');
 
@@ -164,7 +172,7 @@ final class ChannelContext implements Context
     /**
      * @Given channel :channel has been deleted
      */
-    public function iChannelHasBeenDeleted(ChannelInterface $channel)
+    public function iChannelHasBeenDeleted(ChannelInterface $channel): void
     {
         $this->channelRepository->remove($channel);
     }
@@ -172,7 +180,7 @@ final class ChannelContext implements Context
     /**
      * @Given /^(its) default tax zone is (zone "([^"]+)")$/
      */
-    public function itsDefaultTaxRateIs(ChannelInterface $channel, ZoneInterface $defaultTaxZone)
+    public function itsDefaultTaxRateIs(ChannelInterface $channel, ZoneInterface $defaultTaxZone): void
     {
         $channel->setDefaultTaxZone($defaultTaxZone);
         $this->channelManager->flush();
@@ -182,7 +190,7 @@ final class ChannelContext implements Context
      * @Given /^(this channel) has contact email set as "([^"]+)"$/
      * @Given /^(this channel) has no contact email set$/
      */
-    public function thisChannelHasContactEmailSetAs(ChannelInterface $channel, $contactEmail = null)
+    public function thisChannelHasContactEmailSetAs(ChannelInterface $channel, $contactEmail = null): void
     {
         $channel->setContactEmail($contactEmail);
         $this->channelManager->flush();
@@ -191,7 +199,7 @@ final class ChannelContext implements Context
     /**
      * @Given /^on (this channel) shipping step is skipped if only a single shipping method is available$/
      */
-    public function onThisChannelShippingStepIsSkippedIfOnlyASingleShippingMethodIsAvailable(ChannelInterface $channel)
+    public function onThisChannelShippingStepIsSkippedIfOnlyASingleShippingMethodIsAvailable(ChannelInterface $channel): void
     {
         $channel->setSkippingShippingStepAllowed(true);
 

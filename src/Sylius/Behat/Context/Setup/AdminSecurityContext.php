@@ -34,7 +34,7 @@ final class AdminSecurityContext implements Context
      * @Given I am logged in as an administrator
      * @Given there is logged in the administrator
      */
-    public function iAmLoggedInAsAnAdministrator()
+    public function iAmLoggedInAsAnAdministrator(): void
     {
         $user = $this->userFactory->create(['email' => 'sylius@example.com', 'password' => 'sylius', 'api' => true]);
         $this->userRepository->add($user);
@@ -47,7 +47,7 @@ final class AdminSecurityContext implements Context
     /**
      * @Given /^I am logged in as "([^"]+)" administrator$/
      */
-    public function iAmLoggedInAsAdministrator($email)
+    public function iAmLoggedInAsAdministrator($email): void
     {
         $user = $this->userRepository->findOneByEmail($email);
         Assert::notNull($user);
@@ -60,7 +60,7 @@ final class AdminSecurityContext implements Context
     /**
      * @Given I have been logged out from administration
      */
-    public function iHaveBeenLoggedOutFromAdministration()
+    public function iHaveBeenLoggedOutFromAdministration(): void
     {
         $this->securityService->logOut();
 

@@ -43,7 +43,7 @@ final class ZoneContext implements Context
     /**
      * @Given /^there is a zone "The Rest of the World" containing all other countries$/
      */
-    public function thereIsAZoneTheRestOfTheWorldContainingAllOtherCountries()
+    public function thereIsAZoneTheRestOfTheWorldContainingAllOtherCountries(): void
     {
         $restOfWorldCountries = Countries::getNames('en');
         unset($restOfWorldCountries['US']);
@@ -59,7 +59,7 @@ final class ZoneContext implements Context
     /**
      * @Given default tax zone is :zone
      */
-    public function defaultTaxZoneIs(ZoneInterface $zone)
+    public function defaultTaxZoneIs(ZoneInterface $zone): void
     {
         /** @var ChannelInterface $channel */
         $channel = $this->sharedStorage->get('channel');
@@ -71,7 +71,7 @@ final class ZoneContext implements Context
     /**
      * @Given the store does not have any zones defined
      */
-    public function theStoreDoesNotHaveAnyZonesDefined()
+    public function theStoreDoesNotHaveAnyZonesDefined(): void
     {
         $zones = $this->zoneRepository->findAll();
 
@@ -103,7 +103,7 @@ final class ZoneContext implements Context
     /**
      * @Given the store has a :scope zone :zoneName with code :code
      */
-    public function theStoreHasAScopedZoneWithCode($scope, $zoneName, $code)
+    public function theStoreHasAScopedZoneWithCode($scope, $zoneName, $code): void
     {
         $this->saveZone($this->createZone($zoneName, $code, $scope), $scope . '_zone');
     }

@@ -62,7 +62,7 @@ final class CheckoutThankYouContext implements Context
     /**
      * @Then I should see the thank you page
      */
-    public function iShouldSeeTheThankYouPage()
+    public function iShouldSeeTheThankYouPage(): void
     {
         Assert::true($this->thankYouPage->hasThankYouMessage());
     }
@@ -70,7 +70,7 @@ final class CheckoutThankYouContext implements Context
     /**
      * @Then I should see the thank you page in :localeCode
      */
-    public function iShouldSeeTheThankYouPageInLocale($localeCode)
+    public function iShouldSeeTheThankYouPageInLocale($localeCode): void
     {
         Assert::false($this->thankYouPage->isOpen(['_locale' => $localeCode]));
     }
@@ -78,7 +78,7 @@ final class CheckoutThankYouContext implements Context
     /**
      * @Then I should not see the thank you page
      */
-    public function iShouldNotSeeTheThankYouPage()
+    public function iShouldNotSeeTheThankYouPage(): void
     {
         Assert::false($this->thankYouPage->isOpen());
     }
@@ -86,7 +86,7 @@ final class CheckoutThankYouContext implements Context
     /**
      * @Then I should be informed with :paymentMethod payment method instructions
      */
-    public function iShouldBeInformedWithPaymentMethodInstructions(PaymentMethodInterface $paymentMethod)
+    public function iShouldBeInformedWithPaymentMethodInstructions(PaymentMethodInterface $paymentMethod): void
     {
         Assert::same($this->thankYouPage->getInstructions(), $paymentMethod->getInstructions());
     }
@@ -94,7 +94,7 @@ final class CheckoutThankYouContext implements Context
     /**
      * @Then I should not see any instructions about payment method
      */
-    public function iShouldNotSeeAnyInstructionsAboutPaymentMethod()
+    public function iShouldNotSeeAnyInstructionsAboutPaymentMethod(): void
     {
         Assert::false($this->thankYouPage->hasInstructions());
     }
@@ -102,7 +102,7 @@ final class CheckoutThankYouContext implements Context
     /**
      * @Then I should not be able to change payment method
      */
-    public function iShouldNotBeAbleToChangeMyPaymentMethod()
+    public function iShouldNotBeAbleToChangeMyPaymentMethod(): void
     {
         Assert::false($this->thankYouPage->hasChangePaymentMethodButton());
     }

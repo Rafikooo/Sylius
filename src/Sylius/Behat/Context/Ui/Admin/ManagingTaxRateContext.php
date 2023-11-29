@@ -36,7 +36,7 @@ final class ManagingTaxRateContext implements Context
     /**
      * @When I want to create a new tax rate
      */
-    public function iWantToCreateNewTaxRate()
+    public function iWantToCreateNewTaxRate(): void
     {
         $this->createPage->open();
     }
@@ -45,7 +45,7 @@ final class ManagingTaxRateContext implements Context
      * @When I specify its code as :code
      * @When I do not specify its code
      */
-    public function iSpecifyItsCodeAs($code = null)
+    public function iSpecifyItsCodeAs($code = null): void
     {
         $this->createPage->specifyCode($code ?? '');
     }
@@ -55,7 +55,7 @@ final class ManagingTaxRateContext implements Context
      * @When I do not specify its amount
      * @When I remove its amount
      */
-    public function iSpecifyItsAmountAs($amount = null)
+    public function iSpecifyItsAmountAs($amount = null): void
     {
         $this->createPage->specifyAmount($amount ?? '');
     }
@@ -89,7 +89,7 @@ final class ManagingTaxRateContext implements Context
      * @When I define it for the :zoneName zone
      * @When I change its zone to :zoneName
      */
-    public function iDefineItForTheZone($zoneName)
+    public function iDefineItForTheZone($zoneName): void
     {
         $this->createPage->chooseZone($zoneName);
     }
@@ -98,7 +98,7 @@ final class ManagingTaxRateContext implements Context
      * @When I make it applicable for the :taxCategoryName tax category
      * @When I change it to be applicable for the :taxCategoryName tax category
      */
-    public function iMakeItApplicableForTheTaxCategory($taxCategoryName)
+    public function iMakeItApplicableForTheTaxCategory($taxCategoryName): void
     {
         $this->createPage->chooseCategory($taxCategoryName);
     }
@@ -106,7 +106,7 @@ final class ManagingTaxRateContext implements Context
     /**
      * @When I choose the default tax calculator
      */
-    public function iWantToUseTheDefaultTaxCalculator()
+    public function iWantToUseTheDefaultTaxCalculator(): void
     {
         $this->createPage->chooseCalculator('default');
     }
@@ -117,7 +117,7 @@ final class ManagingTaxRateContext implements Context
      * @When I do not name it
      * @When I remove its name
      */
-    public function iNameIt($name = null)
+    public function iNameIt($name = null): void
     {
         $this->createPage->nameIt($name ?? '');
     }
@@ -126,7 +126,7 @@ final class ManagingTaxRateContext implements Context
      * @When I add it
      * @When I try to add it
      */
-    public function iAddIt()
+    public function iAddIt(): void
     {
         $this->createPage->create();
     }
@@ -169,7 +169,7 @@ final class ManagingTaxRateContext implements Context
     /**
      * @When I delete tax rate :taxRate
      */
-    public function iDeletedTaxRate(TaxRateInterface $taxRate)
+    public function iDeletedTaxRate(TaxRateInterface $taxRate): void
     {
         $this->indexPage->open();
         $this->indexPage->deleteResourceOnPage(['name' => $taxRate->getName()]);
@@ -178,7 +178,7 @@ final class ManagingTaxRateContext implements Context
     /**
      * @Then /^(this tax rate) should no longer exist in the registry$/
      */
-    public function thisTaxRateShouldNoLongerExistInTheRegistry(TaxRateInterface $taxRate)
+    public function thisTaxRateShouldNoLongerExistInTheRegistry(TaxRateInterface $taxRate): void
     {
         Assert::false($this->indexPage->isSingleResourceOnPage(['code' => $taxRate->getCode()]));
     }
@@ -187,7 +187,7 @@ final class ManagingTaxRateContext implements Context
      * @When I want to modify a tax rate :taxRate
      * @When /^I want to modify (this tax rate)$/
      */
-    public function iWantToModifyTaxRate(TaxRateInterface $taxRate)
+    public function iWantToModifyTaxRate(TaxRateInterface $taxRate): void
     {
         $this->updatePage->open(['id' => $taxRate->getId()]);
     }
@@ -195,7 +195,7 @@ final class ManagingTaxRateContext implements Context
     /**
      * @Then the code field should be disabled
      */
-    public function theCodeFieldShouldBeDisabled()
+    public function theCodeFieldShouldBeDisabled(): void
     {
         Assert::true($this->updatePage->isCodeDisabled());
     }
@@ -204,7 +204,7 @@ final class ManagingTaxRateContext implements Context
      * @When I save my changes
      * @When I try to save my changes
      */
-    public function iSaveMyChanges()
+    public function iSaveMyChanges(): void
     {
         $this->updatePage->saveChanges();
     }
@@ -213,7 +213,7 @@ final class ManagingTaxRateContext implements Context
      * @Then /^(this tax rate) name should be "([^"]+)"$/
      * @Then /^(this tax rate) should still be named "([^"]+)"$/
      */
-    public function thisTaxRateNameShouldBe(TaxRateInterface $taxRate, $taxRateName)
+    public function thisTaxRateNameShouldBe(TaxRateInterface $taxRate, $taxRateName): void
     {
         $this->assertFieldValue($taxRate, 'name', $taxRateName);
     }
@@ -222,7 +222,7 @@ final class ManagingTaxRateContext implements Context
      * @Then /^(this tax rate) amount should be ([^"]+)%$/
      * @Then /^(this tax rate) amount should still be ([^"]+)%$/
      */
-    public function thisTaxRateAmountShouldBe(TaxRateInterface $taxRate, $taxRateAmount)
+    public function thisTaxRateAmountShouldBe(TaxRateInterface $taxRate, $taxRateAmount): void
     {
         $this->assertFieldValue($taxRate, 'amount', $taxRateAmount);
     }
@@ -230,7 +230,7 @@ final class ManagingTaxRateContext implements Context
     /**
      * @Then I should be notified that tax rate with this code already exists
      */
-    public function iShouldBeNotifiedThatTaxRateWithThisCodeAlreadyExists()
+    public function iShouldBeNotifiedThatTaxRateWithThisCodeAlreadyExists(): void
     {
         Assert::same($this->createPage->getValidationMessage('code'), 'The tax rate with given code already exists.');
     }
@@ -238,7 +238,7 @@ final class ManagingTaxRateContext implements Context
     /**
      * @Then there should still be only one tax rate with :element :code
      */
-    public function thereShouldStillBeOnlyOneTaxRateWith($element, $code)
+    public function thereShouldStillBeOnlyOneTaxRateWith($element, $code): void
     {
         $this->indexPage->open();
 
@@ -248,7 +248,7 @@ final class ManagingTaxRateContext implements Context
     /**
      * @Then /^(this tax rate) should be applicable for the "([^"]+)" tax category$/
      */
-    public function thisTaxRateShouldBeApplicableForTaxCategory(TaxRateInterface $taxRate, $taxCategory)
+    public function thisTaxRateShouldBeApplicableForTaxCategory(TaxRateInterface $taxRate, $taxCategory): void
     {
         $this->assertFieldValue($taxRate, 'category', $taxCategory);
     }
@@ -256,7 +256,7 @@ final class ManagingTaxRateContext implements Context
     /**
      * @Then /^(this tax rate) should be applicable in "([^"]+)" zone$/
      */
-    public function thisTaxRateShouldBeApplicableInZone(TaxRateInterface $taxRate, $zone)
+    public function thisTaxRateShouldBeApplicableInZone(TaxRateInterface $taxRate, $zone): void
     {
         $this->assertFieldValue($taxRate, 'zone', $zone);
     }
@@ -264,7 +264,7 @@ final class ManagingTaxRateContext implements Context
     /**
      * @Then I should be notified that :element has to be selected
      */
-    public function iShouldBeNotifiedThatElementHasToBeSelected($element)
+    public function iShouldBeNotifiedThatElementHasToBeSelected($element): void
     {
         $this->assertFieldValidationMessage($element, sprintf('Please select tax %s.', $element));
     }
@@ -272,7 +272,7 @@ final class ManagingTaxRateContext implements Context
     /**
      * @Then I should be notified that :element is required
      */
-    public function iShouldBeNotifiedThatIsRequired($element)
+    public function iShouldBeNotifiedThatIsRequired($element): void
     {
         $this->assertFieldValidationMessage($element, sprintf('Please enter tax rate %s.', $element));
     }
@@ -288,7 +288,7 @@ final class ManagingTaxRateContext implements Context
     /**
      * @Then tax rate with :element :name should not be added
      */
-    public function taxRateWithElementValueShouldNotBeAdded($element, $name)
+    public function taxRateWithElementValueShouldNotBeAdded($element, $name): void
     {
         $this->indexPage->open();
 
@@ -298,7 +298,7 @@ final class ManagingTaxRateContext implements Context
     /**
      * @When I do not specify its zone
      */
-    public function iDoNotSpecifyItsZone()
+    public function iDoNotSpecifyItsZone(): void
     {
         // Intentionally left blank to fulfill context expectation
     }
@@ -306,7 +306,7 @@ final class ManagingTaxRateContext implements Context
     /**
      * @When I remove its zone
      */
-    public function iRemoveItsZone()
+    public function iRemoveItsZone(): void
     {
         $this->updatePage->removeZone();
     }
@@ -314,7 +314,7 @@ final class ManagingTaxRateContext implements Context
     /**
      * @When I do not specify related tax category
      */
-    public function iDoNotSpecifyRelatedTaxCategory()
+    public function iDoNotSpecifyRelatedTaxCategory(): void
     {
         // Intentionally left blank to fulfill context expectation
     }
@@ -383,7 +383,7 @@ final class ManagingTaxRateContext implements Context
     /**
      * @Given I choose "Included in price" option
      */
-    public function iChooseOption()
+    public function iChooseOption(): void
     {
         $this->createPage->chooseIncludedInPrice();
     }

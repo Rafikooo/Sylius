@@ -813,7 +813,7 @@ final class ProductContext implements Context
     /**
      * @Then /^I should not be able to select the "([^"]*)" ([^\s]+) option value$/
      */
-    public function iShouldNotBeAbleToSelectTheOptionValue(string $optionValue, string $optionName)
+    public function iShouldNotBeAbleToSelectTheOptionValue(string $optionValue, string $optionName): void
     {
         Assert::false(in_array($optionValue, $this->showPage->getOptionValues($optionName), true));
     }
