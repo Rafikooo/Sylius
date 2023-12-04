@@ -26,10 +26,9 @@ final class DashboardContext implements Context
     }
 
     /**
-     * @Given I am on the administration dashboard
-     * @When I (try to )open administration dashboard
+     * @When I (try to )browse administration dashboard statistics
      */
-    public function iOpenAdministrationDashboard(): void
+    public function iBrowseAdministrationDashboardStatistics(): void
     {
         try {
             $this->dashboardPage->open();
@@ -38,9 +37,9 @@ final class DashboardContext implements Context
     }
 
     /**
-     * @When I open administration dashboard for :name channel
+     * @When I browse administration dashboard statistics for :name channel
      */
-    public function iOpenAdministrationDashboardForChannel($name)
+    public function iBrowseAdministrationDashboardStatisticsForChannel($name): void
     {
         $this->dashboardPage->open(['channel' => StringInflector::nameToLowercaseCode($name)]);
     }
@@ -48,7 +47,7 @@ final class DashboardContext implements Context
     /**
      * @When I choose :channelName channel
      */
-    public function iChooseChannel($channelName)
+    public function iChooseChannel($channelName): void
     {
         $this->dashboardPage->chooseChannel($channelName);
     }
@@ -64,7 +63,7 @@ final class DashboardContext implements Context
     /**
      * @Then I should see :number new orders
      */
-    public function iShouldSeeNewOrders($number)
+    public function iShouldSeeNewOrders($number): void
     {
         Assert::same($this->dashboardPage->getNumberOfNewOrders(), (int) $number);
     }
@@ -72,7 +71,7 @@ final class DashboardContext implements Context
     /**
      * @Then I should see :number new customers
      */
-    public function iShouldSeeNewCustomers($number)
+    public function iShouldSeeNewCustomers($number): void
     {
         Assert::same($this->dashboardPage->getNumberOfNewCustomers(), (int) $number);
     }
@@ -80,7 +79,7 @@ final class DashboardContext implements Context
     /**
      * @Then there should be total sales of :total
      */
-    public function thereShouldBeTotalSalesOf($total)
+    public function thereShouldBeTotalSalesOf(string $total): void
     {
         Assert::same($this->dashboardPage->getTotalSales(), $total);
     }
@@ -88,7 +87,7 @@ final class DashboardContext implements Context
     /**
      * @Then the average order value should be :value
      */
-    public function myAverageOrderValueShouldBe($value)
+    public function myAverageOrderValueShouldBe(string $value): void
     {
         Assert::same($this->dashboardPage->getAverageOrderValue(), $value);
     }
@@ -96,7 +95,7 @@ final class DashboardContext implements Context
     /**
      * @Then I should see :number new customers in the list
      */
-    public function iShouldSeeNewCustomersInTheList($number)
+    public function iShouldSeeNewCustomersInTheList($number): void
     {
         Assert::same($this->dashboardPage->getNumberOfNewCustomersInTheList(), (int) $number);
     }
@@ -104,7 +103,7 @@ final class DashboardContext implements Context
     /**
      * @Then I should see :number new orders in the list
      */
-    public function iShouldSeeNewOrdersInTheList($number)
+    public function iShouldSeeNewOrdersInTheList($number): void
     {
         Assert::same($this->dashboardPage->getNumberOfNewOrdersInTheList(), (int) $number);
     }
