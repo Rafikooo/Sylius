@@ -21,6 +21,7 @@ use Sylius\Bundle\ApiBundle\Command\Checkout\CompleteOrder;
 use Sylius\Bundle\ApiBundle\Command\Checkout\UpdateCart;
 use Sylius\Component\Core\Model\Address;
 use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Core\OrderPaymentTransitions;
 use Sylius\Component\Core\Repository\OrderRepositoryInterface;
 use Sylius\Component\Order\OrderTransitions;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -88,6 +89,25 @@ trait OrderPlacerTrait
 
         $stateMachine = $stateMachineFactory->get($order, OrderTransitions::GRAPH);
         $stateMachine->apply(OrderTransitions::TRANSITION_CANCEL);
+
+        $objectManager->flush();
+        $objectManager->clear();
+    }
+
+    protected function payOrder(string $tokenValue): void
+    {
+        $objectManager = $this->get('doctrine.orm.entity_manager');
+
+        /** @var OrderRepositoryInterface $orderRepository */
+        $orderRepository = $this->get('sylius.repository.order');
+        /** @var OrderInterface|null $order */
+        $order = $orderRepository->findOneByTokenValue($tokenValue);
+        Assert::notNull($order);
+
+        $stateMachineFactory = $this->get('sm.factory');
+
+        $stateMachine = $stateMachineFactory->get($order, OrderPaymentTransitions::GRAPH);
+        $stateMachine->apply(OrderPaymentTransitions::TRANSITION_PAY);
 
         $objectManager->flush();
         $objectManager->clear();
