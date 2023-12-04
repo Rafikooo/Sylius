@@ -16,6 +16,7 @@ namespace Sylius\Component\Core\Dashboard;
 use Doctrine\ORM\EntityRepository;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\OrderPaymentStates;
+use Sylius\Component\Core\ValueObject\SalesInPeriod;
 
 /**
  * @experimental
@@ -31,7 +32,8 @@ final class SalesDataProvider implements SalesDataProviderInterface
         \DateTimeInterface $startDate,
         \DateTimeInterface $endDate,
         Interval $interval,
-    ): SalesSummaryInterface {
+        bool $asObjectCollection = false,
+    ): SalesSummaryInterface|array {
         $queryBuilder = $this->orderRepository->createQueryBuilder('o')
             ->select('SUM(o.total) AS total')
             ->andWhere('o.paymentState = :state')
@@ -165,6 +167,37 @@ final class SalesDataProvider implements SalesDataProviderInterface
             $salesData,
         );
 
-        return new SalesSummary($salesData);
+        return $asObjectCollection ? $this->buildSalesInPeriod($period, $ordersTotals) : new SalesSummary($salesData);
+    }
+
+    /**
+     * @param array<array-key, array<array-key, mixed>> $ordersTotals
+     *
+     * @return SalesInPeriod[]
+     */
+    private function buildSalesInPeriod(\DatePeriod $period, array $ordersTotals): array
+    {
+        $salesData = [];
+
+        foreach ($period as $date) {
+            $salesData[] = new SalesInPeriod($this->findTotalSalesForDate($date, $ordersTotals), $date);
+        }
+
+        return $salesData;
+    }
+
+    /** @param array<array-key, array<array-key, mixed>> $ordersTotals */
+    private function findTotalSalesForDate(\DateTimeInterface $date, array $ordersTotals): int
+    {
+        $year = (int) $date->format('Y');
+        $month = (int) $date->format('n');
+
+        foreach ($ordersTotals as $orderTotal) {
+            if ((int) $orderTotal['year'] === $year && (int) $orderTotal['month'] === $month) {
+                return (int) $orderTotal['total'];
+            }
+        }
+
+        return 0;
     }
 }

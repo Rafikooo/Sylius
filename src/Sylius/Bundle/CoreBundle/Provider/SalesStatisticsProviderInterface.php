@@ -11,19 +11,18 @@
 
 declare(strict_types=1);
 
-namespace Sylius\Component\Core\Dashboard;
+namespace Sylius\Bundle\CoreBundle\Provider;
 
+use Sylius\Component\Core\Dashboard\Interval;
 use Sylius\Component\Core\Model\ChannelInterface;
-use Sylius\Component\Core\ValueObject\SalesInPeriod;
+use Sylius\Component\Core\ValueObject\SalesStatistics;
 
-interface SalesDataProviderInterface
+interface SalesStatisticsProviderInterface
 {
-    /** @return SalesSummaryInterface|array<array-key, SalesInPeriod> */
-    public function getSalesSummary(
+    public function provide(
         ChannelInterface $channel,
         \DateTimeInterface $startDate,
         \DateTimeInterface $endDate,
         Interval $interval,
-        bool $asObjectCollection = false,
-    ): SalesSummaryInterface|array;
+    ): SalesStatistics;
 }
