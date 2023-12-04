@@ -10,5 +10,5 @@ Feature: Redirecting on login page
 
     @ui
     Scenario: Redirecting on login page after being logout
-        When I try to open administration dashboard
+        When I browse administration dashboard statistics
         Then I should be on login page

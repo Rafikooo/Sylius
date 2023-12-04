@@ -34,7 +34,7 @@ Feature: Switching locales on admin's panel
     @ui
     Scenario: Changing shop's locale has doesn't affect admin panel's locale
         Given I switched the shop's locale to "Spanish (Mexico)"
-        When I open administration dashboard
+        When I browse administration dashboard statistics
         Then I should still be viewing the administration panel in "English (United States)"
 
     @ui
