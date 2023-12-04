@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sylius\Bundle\AdminBundle\Controller\Dashboard;
 
 use Sylius\Bundle\AdminBundle\Provider\StatisticsDataProviderInterface;
+use Sylius\Component\Core\Dashboard\Interval;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
@@ -34,7 +35,7 @@ final class StatisticsController
                 $channel,
                 (new \DateTime('first day of january this year')),
                 (new \DateTime('first day of january next year')),
-                'month',
+                Interval::month()->asString(),
             ),
         ));
     }
