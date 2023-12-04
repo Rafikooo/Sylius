@@ -20,5 +20,5 @@ Feature: Browsing administration panel in a proper locale
 
     @ui
     Scenario: Seeing menu in my language
-        When I open administration dashboard
+        When I browse administration dashboard statistics
         Then I should see sidebar catalog section configuration in "Polish (Poland)" locale
