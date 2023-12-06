@@ -96,6 +96,7 @@ final class DashboardContext implements Context
                 'averageOrderValue',
                 $averageTotalValue,
             ),
+            sprintf('Average order value should be %s, but it does not.', $averageTotalValue),
         );
     }
 

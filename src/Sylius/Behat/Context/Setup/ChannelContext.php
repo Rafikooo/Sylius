@@ -50,14 +50,6 @@ final class ChannelContext implements Context
     }
 
     /**
-     * @Given the store's default channel is set to :channel
-     */
-    public function theStoresDefaultChannelIsSetTo(ChannelInterface $channel): void
-    {
-        $this->sharedStorage->set('channel', $channel);
-    }
-
-    /**
      * @Given /^the (channel "[^"]+") has ("([^"]+)" and "([^"]+)" taxons) excluded from showing the lowest price of discounted products$/
      */
     public function theTaxonAndTaxonAreExcludedFromShowingTheLowestPriceOfDiscountedProductsOnThisChannel(
@@ -73,11 +65,14 @@ final class ChannelContext implements Context
     }
 
     /**
-     * @Given the store operates on a single channel in "United States"
+     * @Given the store operates on a single channel in :channelName
      */
-    public function storeOperatesOnASingleChannelInUnitedStates(): void
+    public function storeOperatesOnASingleChannelInUnitedStates(string $channelName): void
     {
-        $defaultData = $this->unitedStatesChannelFactory->create();
+        $defaultData = $this->unitedStatesChannelFactory->create(
+            code: StringInflector::nameToLowercaseCode($channelName),
+            name: $channelName,
+        );
 
         $this->sharedStorage->setClipboard($defaultData);
         $this->sharedStorage->set('channel', $defaultData['channel']);
