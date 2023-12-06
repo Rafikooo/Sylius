@@ -1,8 +1,8 @@
 @admin_dashboard
-Feature: Statistics dashboard in a single channel
+Feature: Sales Statistics in a single channel
     In order to have an overview of my sales
     As an Administrator
-    I want to see overall statistics on my admin dashboard
+    I want to see overall sales statistics on my admin dashboard
 
     Background:
         Given the store operates on a single channel in "United States"
@@ -16,7 +16,7 @@ Feature: Statistics dashboard in a single channel
     Scenario: Seeing basic statistics for entire store
         Given 3 customers have fulfilled 4 orders placed for total of "$8,566.00"
         And 2 more customers have paid 2 orders placed for total of "$459.00"
-        When I browse administration dashboard statistics
+        When I browse administration dashboard statistics for "United States" channel
         Then I should see 6 new orders
         And I should see 5 new customers
         And there should be total sales of "$9,025.00"
@@ -29,7 +29,7 @@ Feature: Statistics dashboard in a single channel
         And 2 customers have added products to the cart for total of "$3,450.00"
         And a single customer has placed an order for total of "$1,000.00"
         But the customer cancelled this order
-        When I browse administration dashboard statistics
+        When I browse administration dashboard statistics for "United States" channel
         Then I should see 4 new orders
         And I should see 9 new customers
         And there should be total sales of "$5,241.00"
@@ -39,6 +39,6 @@ Feature: Statistics dashboard in a single channel
     Scenario: Seeing recent orders and customers
         Given 2 customers have placed 3 orders for total of "$340.00"
         And 2 customers have added products to the cart for total of "$424.00"
-        When I browse administration dashboard statistics
+        When I browse administration dashboard statistics for "United States" channel
         Then I should see 4 new customers in the list
         And I should see 3 new orders in the list
