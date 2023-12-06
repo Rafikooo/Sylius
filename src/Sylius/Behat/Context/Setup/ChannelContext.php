@@ -50,14 +50,6 @@ final class ChannelContext implements Context
     }
 
     /**
-     * @Given the store's default channel is set to :channel
-     */
-    public function theStoresDefaultChannelIsSetTo(ChannelInterface $channel): void
-    {
-        $this->sharedStorage->set('channel', $channel);
-    }
-
-    /**
      * @Given /^the (channel "[^"]+") has ("([^"]+)" and "([^"]+)" taxons) excluded from showing the lowest price of discounted products$/
      */
     public function theTaxonAndTaxonAreExcludedFromShowingTheLowestPriceOfDiscountedProductsOnThisChannel(
