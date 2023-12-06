@@ -39,9 +39,15 @@ final class DashboardContext implements Context
     /**
      * @When I browse administration dashboard statistics for :name channel
      */
-    public function iBrowseAdministrationDashboardStatisticsForChannel($name): void
+    public function iBrowseAdministrationDashboardStatisticsForChannel(string $name): void
     {
-        $this->dashboardPage->open(['channel' => StringInflector::nameToLowercaseCode($name)]);
+        if ('United States' === $name) {
+            $name = 'WEB-US';
+        } else {
+            $name = StringInflector::nameToLowercaseCode($name);
+        }
+
+        $this->dashboardPage->open(['channel' => $name]);
     }
 
     /**
