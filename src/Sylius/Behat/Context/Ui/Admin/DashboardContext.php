@@ -89,7 +89,11 @@ final class DashboardContext implements Context
      */
     public function myAverageOrderValueShouldBe(string $value): void
     {
-        Assert::same($this->dashboardPage->getAverageOrderValue(), $value);
+        Assert::same(
+            $this->dashboardPage->getAverageOrderValue(),
+            $value,
+            'Expected average order value to be equal to %2$s, but it is %s.',
+        );
     }
 
     /**
