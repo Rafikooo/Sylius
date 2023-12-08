@@ -25,8 +25,8 @@
             <argument type="service" id="sylius.customer_statistics_provider" />
         </service>
 
-        <service id="Sylius\Bundle\ApiBundle\QueryHandler\Admin\GetSalesStatisticsHandler">
-            <argument type="service" id="Sylius\Component\Core\Sales\Provider\SalesStatisticsProviderInterface" />
+        <service id="Sylius\Bundle\ApiBundle\QueryHandler\Admin\GetStatisticsHandler">
+            <argument type="service" id="Sylius\Component\Core\Statistics\Provider\StatisticsProviderInterface" />
             <argument type="service" id="sylius.repository.channel" />
             <tag name="messenger.message_handler" bus="sylius.query_bus" />
         </service>
