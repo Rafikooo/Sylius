@@ -54,5 +54,10 @@
         <service id="Sylius\Bundle\ApiBundle\Controller\UploadTaxonImageAction">
             <argument type="service" id="Sylius\Bundle\ApiBundle\Creator\TaxonImageCreator" />
         </service>
+
+        <service id="Sylius\Bundle\ApiBundle\Controller\GetStatisticsAction">
+            <argument type="service" id="sylius.query_bus" />
+            <argument type="service" id="serializer" />
+        </service>
     </services>
 </container>
