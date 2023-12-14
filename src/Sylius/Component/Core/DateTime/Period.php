@@ -13,11 +13,19 @@ declare(strict_types=1);
 
 namespace Sylius\Component\Core\DateTime;
 
-class Period
+class Period implements \IteratorAggregate
 {
+    private const YEAR = 'year';
+
+    private const MONTH = 'month';
+
+    private const WEEK = 'week';
+
+    private const DAY = 'day';
+
     private \DatePeriod $period;
 
-    public function __construct(\DateTimeInterface $startDate, \DateTimeInterface $endDate, \DateInterval $interval)
+    public function __construct(\DateTimeImmutable $startDate, \DateTimeImmutable $endDate, \DateInterval $interval)
     {
         if ($startDate >= $endDate) {
             throw new \InvalidArgumentException('Start date cannot be greater or equal to end date.');
@@ -26,14 +34,31 @@ class Period
         $this->period = new \DatePeriod($startDate, $interval, $endDate);
     }
 
-    public function getStartDate(): \DateTimeInterface
+    public function getIterator(): \DatePeriod
     {
-        return $this->period->getStartDate();
+        return $this->period;
     }
 
-    public function getEndDate(): \DateTimeInterface
+    public function getStartDate(): \DateTimeImmutable
     {
-        return $this->period->getEndDate();
+        try {
+            $startDate = new \DateTimeImmutable($this->period->getStartDate()->format('Y-m-d H:i:s'));
+        } catch (\Exception) {
+            throw new \RuntimeException('Start date must be a valid date.');
+        }
+
+        return $startDate;
+    }
+
+    public function getEndDate(): \DateTimeImmutable
+    {
+        try {
+            $endDate = new \DateTimeImmutable($this->period->getEndDate()->format('Y-m-d H:i:s'));
+        } catch (\Exception) {
+            throw new \RuntimeException('End date must be a valid date.');
+        }
+
+        return $endDate;
     }
 
     public function getIntervalType(): string
@@ -41,17 +66,17 @@ class Period
         $interval = $this->period->getDateInterval();
 
         if ($interval->y > 0) {
-            return 'year';
+            return self::YEAR;
         }
 
         if ($interval->m > 0) {
-            return 'month';
+            return self::MONTH;
         }
 
         if ($interval->d >= 7) {
-            return 'week';
+            return self::WEEK;
         }
 
-        return 'day';
+        return self::DAY;
     }
 }

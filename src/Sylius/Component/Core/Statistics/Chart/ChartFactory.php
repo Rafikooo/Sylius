@@ -30,8 +30,6 @@ final class ChartFactory implements ChartFactoryInterface
      */
     private function createChart(Period $period, array $inputDatasets): ChartInterface
     {
-        $period = $this->getDatePeriod($period);
-
         $labels = [];
         $datasets = [];
 
@@ -47,7 +45,7 @@ final class ChartFactory implements ChartFactoryInterface
     }
 
     /** @param array<array-key, mixed> $ordersTotals */
-    private function populateDataByDate(\DateTimeInterface $date, array $ordersTotals): int
+    private function populateDataByDate(\DateTimeImmutable $date, array $ordersTotals): int
     {
         $year = (int) $date->format('Y');
         $month = (int) $date->format('n');
@@ -59,15 +57,6 @@ final class ChartFactory implements ChartFactoryInterface
         }
 
         return 0;
-    }
-
-    private function getDatePeriod(Period $period): \DatePeriod
-    {
-        return new \DatePeriod(
-            $period->getStartDate(),
-            \DateInterval::createFromDateString(sprintf('1 %s', $period->getIntervalType())),
-            $period->getEndDate(),
-        );
     }
 
     /**
