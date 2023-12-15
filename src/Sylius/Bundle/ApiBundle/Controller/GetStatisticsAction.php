@@ -28,7 +28,7 @@ final class GetStatisticsAction
         'channelCode' => 'string',
         'dateTimeStart' => 'dateTime',
         'dateInterval' => 'dateInterval',
-        'dateTimeEnd' => 'dateTime',
+        'recurrences' => 'int',
     ];
 
     private array $supportedIntervals = [
@@ -52,19 +52,19 @@ final class GetStatisticsAction
 
     public function __invoke(Request $request): Response
     {
-        $start = new \DateTime($request->query->get('dateTimeStart'));
-        $interval = new \DateInterval($request->query->get('dateInterval'));
-        $result = [];
-        $period = new \DatePeriod(
-            $start,
-            $interval,
-            (int) $request->query->get('recurrences'),
-        );
-        foreach ($period as $date) {
-            $result[] = $date->format('Y-m-d H:i:s');
-        }
-
-        return new JsonResponse(data: $this->serializer->serialize($result, 'json'), json: true);
+//        $start = new \DateTime($request->query->get('dateTimeStart'));
+//        $interval = new \DateInterval($request->query->get('dateInterval'));
+//        $result = [];
+//        $period = new \DatePeriod(
+//            $start,
+//            $interval,
+//            (int) $request->query->get('recurrences'),
+//        );
+//        foreach ($period as $date) {
+//            $result[] = $date->format('Y-m-d H:i:s');
+//        }
+//
+//        return new JsonResponse(data: $this->serializer->serialize($result, 'json'), json: true);
 
         $violations = $this->validateRequiredParameters($request);
 
@@ -81,8 +81,10 @@ final class GetStatisticsAction
         $period = new \DatePeriod(
             new \DateTimeImmutable($parameters['dateTimeStart']),
             new \DateInterval($parameters['dateInterval']),
-            new \DateTimeImmutable($parameters['dateTimeEnd']),
+            (int) $parameters['recurrences'],
         );
+
+        dd($period->getDateInterval()->y, $period->getDateInterval()->m, $period->getDateInterval()->d);
 
         $query = new GetStatistics($period, $parameters['channelCode']);
 
@@ -131,6 +133,11 @@ final class GetStatisticsAction
                 $violations[] = [
                     'propertyPath' => $parameterName,
                     'message' => sprintf('Parameter "%s" must be a valid DateInterval string.', $parameterName),
+                ];
+            } elseif ($parameterType === 'int' && filter_var($parameter, FILTER_VALIDATE_INT) === false) {
+                $violations[] = [
+                    'propertyPath' => $parameterName,
+                    'message' => sprintf('Parameter "%s" must be an integer.', $parameterName),
                 ];
             }
         }

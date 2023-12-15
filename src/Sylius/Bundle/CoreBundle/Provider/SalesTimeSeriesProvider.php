@@ -42,7 +42,7 @@ final class SalesTimeSeriesProvider implements SalesTimeSeriesProviderInterface
             ->setParameter('channel', $channel)
         ;
 
-        switch ($interval->y > 0 && $interval->m === 0 && $interval->d === 0) {
+        if ($interval->y > 0 && $interval->m === 0 && $interval->d === 0) {
             case 'year':
                 $queryBuilder
                     ->addSelect('YEAR(o.checkoutCompletedAt) as year')

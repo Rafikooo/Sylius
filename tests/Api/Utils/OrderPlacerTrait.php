@@ -25,12 +25,36 @@ use Sylius\Component\Core\OrderPaymentTransitions;
 use Sylius\Component\Core\Repository\OrderRepositoryInterface;
 use Sylius\Component\Order\OrderTransitions;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\HandledStamp;
 use Webmozart\Assert\Assert;
 
 trait OrderPlacerTrait
 {
-    protected function placeOrder(string $tokenValue, string $email = 'sylius@example.com'): void
-    {
+    protected function fulfillOrder(
+        string $tokenValue,
+        string $productVariantCode = 'MUG_BLUE',
+        int $quantity = 3,
+        ?\DateTimeImmutable $checkoutCompletedAt = null,
+    ): OrderInterface {
+        $order = $this->placeOrder(
+            tokenValue: $tokenValue,
+            productVariantCode: $productVariantCode,
+            quantity: $quantity,
+            checkoutCompletedAt: $checkoutCompletedAt,
+        );
+        $order = $this->payOrder($order);
+        $this->setCheckoutCompletedAt($order, $checkoutCompletedAt);
+
+        return $order;
+    }
+
+    protected function placeOrder(
+        string $tokenValue,
+        string $email = 'sylius@example.com',
+        string $productVariantCode = 'MUG_BLUE',
+        int $quantity = 3,
+        ?\DateTimeImmutable $checkoutCompletedAt = null,
+    ): OrderInterface {
         /** @var MessageBusInterface $commandBus */
         $commandBus = self::getContainer()->get('sylius.command_bus');
 
@@ -38,7 +62,7 @@ trait OrderPlacerTrait
         $pickupCartCommand->setChannelCode('WEB');
         $commandBus->dispatch($pickupCartCommand);
 
-        $addItemToCartCommand = new AddItemToCart('MUG_BLUE', 3);
+        $addItemToCartCommand = new AddItemToCart($productVariantCode, $quantity);
         $addItemToCartCommand->setOrderTokenValue($tokenValue);
         $commandBus->dispatch($addItemToCartCommand);
 
@@ -62,17 +86,21 @@ trait OrderPlacerTrait
 
         $chooseShippingMethodCommand = new ChooseShippingMethod('UPS');
         $chooseShippingMethodCommand->setOrderTokenValue($tokenValue);
-        $chooseShippingMethodCommand->setSubresourceId((string) $cart->getShipments()->first()->getId());
+        $chooseShippingMethodCommand->setSubresourceId((string)$cart->getShipments()->first()->getId());
         $commandBus->dispatch($chooseShippingMethodCommand);
 
         $choosePaymentMethodCommand = new ChoosePaymentMethod('CASH_ON_DELIVERY');
         $choosePaymentMethodCommand->setOrderTokenValue($tokenValue);
-        $choosePaymentMethodCommand->setSubresourceId((string) $cart->getLastPayment()->getId());
+        $choosePaymentMethodCommand->setSubresourceId((string)$cart->getLastPayment()->getId());
         $commandBus->dispatch($choosePaymentMethodCommand);
 
         $completeOrderCommand = new CompleteOrder();
         $completeOrderCommand->setOrderTokenValue($tokenValue);
-        $commandBus->dispatch($completeOrderCommand);
+        $envelope = $commandBus->dispatch($completeOrderCommand);
+
+        $handledStamp = $envelope->last(HandledStamp::class);
+
+        return $handledStamp->getResult();
     }
 
     protected function cancelOrder(string $tokenValue): void
@@ -94,15 +122,9 @@ trait OrderPlacerTrait
         $objectManager->clear();
     }
 
-    protected function payOrder(string $tokenValue): void
+    protected function payOrder(OrderInterface $order): OrderInterface
     {
         $objectManager = $this->get('doctrine.orm.entity_manager');
-
-        /** @var OrderRepositoryInterface $orderRepository */
-        $orderRepository = $this->get('sylius.repository.order');
-        /** @var OrderInterface|null $order */
-        $order = $orderRepository->findOneByTokenValue($tokenValue);
-        Assert::notNull($order);
 
         $stateMachineFactory = $this->get('sm.factory');
 
@@ -111,5 +133,20 @@ trait OrderPlacerTrait
 
         $objectManager->flush();
         $objectManager->clear();
+
+        return $order;
+    }
+
+    private function setCheckoutCompletedAt(
+        OrderInterface $order,
+        ?\DateTimeImmutable $checkoutCompletedAt,
+    ): OrderInterface {
+        $objectManager = $this->get('doctrine.orm.entity_manager');
+
+        $order->setCheckoutCompletedAt($checkoutCompletedAt);
+
+        $objectManager->flush();
+
+        return $order;
     }
 }
