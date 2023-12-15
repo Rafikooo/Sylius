@@ -90,6 +90,5 @@ trait OrderPlacerTrait
         $stateMachine->apply(OrderTransitions::TRANSITION_CANCEL);
 
         $objectManager->flush();
-        $objectManager->clear();
     }
 }
