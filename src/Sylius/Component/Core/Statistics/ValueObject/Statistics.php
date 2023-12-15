@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sylius\Component\Core\Statistics\ValueObject;
 
-use Sylius\Component\Core\DateTime\Period;
 use Sylius\Component\Core\Statistics\Chart\ChartInterface;
 
 class Statistics
