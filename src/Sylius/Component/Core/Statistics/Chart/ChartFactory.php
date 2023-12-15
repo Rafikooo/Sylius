@@ -74,7 +74,7 @@ final class ChartFactory implements ChartFactoryInterface
      */
     private function validateDataKeysForDataset(array $dataset): void
     {
-        $requiredFields = ['year', 'month'];
+        $requiredFields = ['total', 'year', 'month'];
 
         foreach ($dataset as $data) {
             Assert::isArray($data, sprintf('The dataset element must be an array, got %s.', get_debug_type($data)));

@@ -25,13 +25,18 @@ class Period implements \IteratorAggregate
 
     private \DatePeriod $period;
 
-    public function __construct(\DateTimeImmutable $startDate, \DateTimeImmutable $endDate, \DateInterval $interval)
-    {
+    public function __construct(
+        \DateTimeImmutable $startDate,
+        \DateTimeImmutable $endDate,
+        \DateInterval $interval,
+    ) {
         if ($startDate >= $endDate) {
             throw new \InvalidArgumentException('Start date cannot be greater or equal to end date.');
         }
 
         $this->period = new \DatePeriod($startDate, $interval, $endDate);
+
+        $this->period->getDateInterval()->format('Y-m-d H:i:s');
     }
 
     public function getIterator(): \DatePeriod
@@ -41,24 +46,12 @@ class Period implements \IteratorAggregate
 
     public function getStartDate(): \DateTimeImmutable
     {
-        try {
-            $startDate = new \DateTimeImmutable($this->period->getStartDate()->format('Y-m-d H:i:s'));
-        } catch (\Exception) {
-            throw new \RuntimeException('Start date must be a valid date.');
-        }
-
-        return $startDate;
+        return new \DateTimeImmutable($this->period->getStartDate()->format('Y-m-d H:i:s'));
     }
 
     public function getEndDate(): \DateTimeImmutable
     {
-        try {
-            $endDate = new \DateTimeImmutable($this->period->getEndDate()->format('Y-m-d H:i:s'));
-        } catch (\Exception) {
-            throw new \RuntimeException('End date must be a valid date.');
-        }
-
-        return $endDate;
+        return  new \DateTimeImmutable($this->period->getEndDate()->format('Y-m-d H:i:s'));
     }
 
     public function getIntervalType(): string

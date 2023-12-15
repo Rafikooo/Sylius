@@ -14,7 +14,9 @@ declare(strict_types=1);
 namespace Sylius\Bundle\ApiBundle\Controller;
 
 use Sylius\Bundle\ApiBundle\Query\GetStatistics;
-use Sylius\Component\Core\DateTime\Period;
+use Sylius\Component\Core\Statistics\Chart\CalendarIntervalType;
+use Sylius\Component\Core\Statistics\Chart\PeriodFactoryInterface;
+use Sylius\Component\Core\Statistics\Chart\PeriodType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,8 +28,11 @@ final class GetStatisticsAction
 {
     use HandleTrait;
 
-    public function __construct(MessageBusInterface $queryBus, private SerializerInterface $serializer)
-    {
+    public function __construct(
+        MessageBusInterface $queryBus,
+        private PeriodFactoryInterface $periodFactory,
+        private SerializerInterface $serializer,
+    ) {
         $this->messageBus = $queryBus;
     }
 
@@ -39,11 +44,58 @@ final class GetStatisticsAction
             return new JsonResponse(['error' => 'Missing channelCode parameter.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $period = new Period(
-            new \DateTimeImmutable('first day of january this year 00:00:00'),
-            new \DateTimeImmutable('last day of december this year 23:59:59'),
-            \DateInterval::createFromDateString('1 month'),
+        $periodType = $request->query->get('periodType');
+
+        if ($periodType === null) {
+            return new JsonResponse(['error' => 'Missing periodType parameter.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        if (!in_array($periodType, [PeriodType::CALENDAR, PeriodType::CUSTOM])) {
+            return new JsonResponse([
+                'error' => sprintf(
+                    'Invalid periodType parameter. Allowed values are "%s" and "%s".',
+                    PeriodType::CALENDAR,
+                    PeriodType::CUSTOM
+                )
+                ], Response::HTTP_BAD_REQUEST);
+        }
+
+        if ($periodType === PeriodType::CUSTOM) {
+            throw new \Exception('Not implemented yet.');
+        }
+
+        $year = $request->query->get('year');
+
+        if ($year === null) {
+            return new JsonResponse(['error' => 'Missing year parameter.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        if (!is_numeric($year)) {
+            return new JsonResponse(['error' => 'Invalid year parameter, must be numeric.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $calendarIntervalType = $request->query->get('calendarIntervalType');
+
+        if ($calendarIntervalType === null) {
+            return new JsonResponse(['error' => 'Missing calendarIntervalType parameter.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        if (!in_array($calendarIntervalType, CalendarIntervalType::getAllTypes(), true)) {
+            return new JsonResponse([
+                'error' => sprintf(
+                    'Invalid calendarIntervalType parameter. Allowed values are "%s".',
+                    implode('", "', CalendarIntervalType::getAllTypes())
+                )
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $period = $this->periodFactory->createAnnualCalendarPeriod(
+            year: (int)$request->query->get('year'),
+            calendarIntervalType: $request->query->get('calendarIntervalType'),
         );
+
+
+        //waliduj $period
 
         return new JsonResponse(
             data: $this->serializer->serialize($this->handle(new GetStatistics($period, $channelCode)), 'json'),

@@ -73,6 +73,8 @@ trait OrderPlacerTrait
         $completeOrderCommand = new CompleteOrder();
         $completeOrderCommand->setOrderTokenValue($tokenValue);
         $commandBus->dispatch($completeOrderCommand);
+
+
     }
 
     protected function cancelOrder(string $tokenValue): void
