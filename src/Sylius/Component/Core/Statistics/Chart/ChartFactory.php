@@ -13,27 +13,26 @@ declare(strict_types=1);
 
 namespace Sylius\Component\Core\Statistics\Chart;
 
-use Sylius\Component\Core\DateTime\Period;
 use Webmozart\Assert\Assert;
 
 final class ChartFactory implements ChartFactoryInterface
 {
-    public function createTimeSeries(Period $period, array $namedDatasets): ChartInterface
+    public function createTimeSeries(\DatePeriod $datePeriod, array $namedDatasets): ChartInterface
     {
         $this->validateDatasetsDataKeys($namedDatasets);
 
-        return $this->createChart($period, $namedDatasets);
+        return $this->createChart($datePeriod, $namedDatasets);
     }
 
     /**
      * @param array<string, array<object>> $inputDatasets
      */
-    private function createChart(Period $period, array $inputDatasets): ChartInterface
+    private function createChart(\DatePeriod $datePeriod, array $inputDatasets): ChartInterface
     {
         $labels = [];
         $datasets = [];
 
-        foreach ($period as $date) {
+        foreach ($datePeriod as $date) {
             $labels[] = $date->format('Y-m-d');
 
             foreach ($inputDatasets as $datasetName => $dataset) {
@@ -74,7 +73,7 @@ final class ChartFactory implements ChartFactoryInterface
      */
     private function validateDataKeysForDataset(array $dataset): void
     {
-        $requiredFields = ['year', 'month'];
+        $requiredFields = ['total', 'year', 'month'];
 
         foreach ($dataset as $data) {
             Assert::isArray($data, sprintf('The dataset element must be an array, got %s.', get_debug_type($data)));

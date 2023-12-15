@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sylius\Bundle\CoreBundle\Provider;
 
 use Doctrine\ORM\EntityRepository;
-use Sylius\Component\Core\DateTime\Period;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\OrderPaymentStates;
@@ -31,8 +30,10 @@ final class SalesTimeSeriesProvider implements SalesTimeSeriesProviderInterface
     {
     }
 
-    public function provide(Period $period, ChannelInterface $channel): ChartInterface
+    public function provide(\DatePeriod $datePeriod, ChannelInterface $channel): ChartInterface
     {
+        $interval = $datePeriod->getDateInterval();
+
         $queryBuilder = $this->orderRepository->createQueryBuilder('o')
             ->select('SUM(o.total) AS total')
             ->andWhere('o.paymentState = :state')
@@ -41,14 +42,14 @@ final class SalesTimeSeriesProvider implements SalesTimeSeriesProviderInterface
             ->setParameter('channel', $channel)
         ;
 
-        switch ($period->getIntervalType()) {
+        switch ($interval->y > 0 && $interval->m === 0 && $interval->d === 0) {
             case 'year':
                 $queryBuilder
                     ->addSelect('YEAR(o.checkoutCompletedAt) as year')
                     ->groupBy('year')
                     ->andWhere('YEAR(o.checkoutCompletedAt) >= :startYear AND YEAR(o.checkoutCompletedAt) <= :endYear')
-                    ->setParameter('startYear', $period->getStartDate()->format('Y'))
-                    ->setParameter('endYear', $period->getEndDate()->format('Y'))
+                    ->setParameter('startYear', $datePeriod->getStartDate()->format('Y'))
+                    ->setParameter('endYear', $datePeriod->getEndDate()->format('Y'))
                 ;
 
                 break;
@@ -64,10 +65,10 @@ final class SalesTimeSeriesProvider implements SalesTimeSeriesProviderInterface
                         'YEAR(o.checkoutCompletedAt) = :endYear AND YEAR(o.checkoutCompletedAt) != :startYear AND MONTH(o.checkoutCompletedAt) <= :endMonth',
                         'YEAR(o.checkoutCompletedAt) > :startYear AND YEAR(o.checkoutCompletedAt) < :endYear',
                     ))
-                    ->setParameter('startYear', $period->getStartDate()->format('Y'))
-                    ->setParameter('startMonth', $period->getStartDate()->format('n'))
-                    ->setParameter('endYear', $period->getEndDate()->format('Y'))
-                    ->setParameter('endMonth', $period->getEndDate()->format('n'))
+                    ->setParameter('startYear', $datePeriod->getStartDate()->format('Y'))
+                    ->setParameter('startMonth', $datePeriod->getStartDate()->format('n'))
+                    ->setParameter('endYear', $datePeriod->getEndDate()->format('Y'))
+                    ->setParameter('endMonth', $datePeriod->getEndDate()->format('n'))
                 ;
 
                 break;
@@ -83,10 +84,10 @@ final class SalesTimeSeriesProvider implements SalesTimeSeriesProviderInterface
                         'YEAR(o.checkoutCompletedAt) = :endYear AND YEAR(o.checkoutCompletedAt) != :startYear AND WEEK(o.checkoutCompletedAt) <= :endWeek',
                         'YEAR(o.checkoutCompletedAt) > :startYear AND YEAR(o.checkoutCompletedAt) < :endYear',
                     ))
-                    ->setParameter('startYear', $period->getStartDate()->format('Y'))
-                    ->setParameter('startWeek', (ltrim($period->getStartDate()->format('W'), '0') ?: '0'))
-                    ->setParameter('endYear', $period->getEndDate()->format('Y'))
-                    ->setParameter('endWeek', (ltrim($period->getEndDate()->format('W'), '0') ?: '0'))
+                    ->setParameter('startYear', $datePeriod->getStartDate()->format('Y'))
+                    ->setParameter('startWeek', (ltrim($datePeriod->getStartDate()->format('W'), '0') ?: '0'))
+                    ->setParameter('endYear', $datePeriod->getEndDate()->format('Y'))
+                    ->setParameter('endWeek', (ltrim($datePeriod->getEndDate()->format('W'), '0') ?: '0'))
                 ;
 
                 break;
@@ -109,21 +110,21 @@ final class SalesTimeSeriesProvider implements SalesTimeSeriesProviderInterface
                         'YEAR(o.checkoutCompletedAt) = :endYear AND YEAR(o.checkoutCompletedAt) != :startYear AND MONTH(o.checkoutCompletedAt) < :endMonth',
                         'YEAR(o.checkoutCompletedAt) > :startYear AND YEAR(o.checkoutCompletedAt) < :endYear',
                     ))
-                    ->setParameter('startYear', $period->getStartDate()->format('Y'))
-                    ->setParameter('startMonth', $period->getStartDate()->format('n'))
-                    ->setParameter('startDay', $period->getStartDate()->format('j'))
-                    ->setParameter('endYear', $period->getEndDate()->format('Y'))
-                    ->setParameter('endMonth', $period->getEndDate()->format('n'))
-                    ->setParameter('endDay', $period->getEndDate()->format('j'))
+                    ->setParameter('startYear', $datePeriod->getStartDate()->format('Y'))
+                    ->setParameter('startMonth', $datePeriod->getStartDate()->format('n'))
+                    ->setParameter('startDay', $datePeriod->getStartDate()->format('j'))
+                    ->setParameter('endYear', $datePeriod->getEndDate()->format('Y'))
+                    ->setParameter('endMonth', $datePeriod->getEndDate()->format('n'))
+                    ->setParameter('endDay', $datePeriod->getEndDate()->format('j'))
                 ;
 
                 break;
             default:
-                throw new \RuntimeException(sprintf('Interval "%s" not supported.', $period->getIntervalType()));
+                throw new \RuntimeException(sprintf('Interval "%s" not supported.', $datePeriod->getIntervalType()));
         }
 
         $ordersTotals = $queryBuilder->getQuery()->getArrayResult();
 
-        return $this->chartFactory->createTimeSeries($period, [self::SALES => $ordersTotals]);
+        return $this->chartFactory->createTimeSeries($datePeriod, [self::SALES => $ordersTotals]);
     }
 }
