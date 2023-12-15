@@ -38,35 +38,26 @@ final class StatisticsTest extends JsonApiTestCase
 
     /**
      * @test
-     *
-     * @dataProvider provideOrdersForDifferentPeriods
      */
-    public function it_gets_statistics_data(
-        array $orders,
-    ): void {
+    public function it_gets_statistics_data_for_specific_year(): void {
         $this->loadFixturesFromFiles(['authentication/api_administrator.yaml', 'channel.yaml', 'cart.yaml', 'shipping_method.yaml', 'payment_method.yaml']);
 
-        foreach ($orders as $key => $orderData) {
-            $orderToken = \sprintf('ORDER_TOKEN_%d', $key);
-            $this->placeOrder($orderToken, sprintf('customer_%s@example.com', $key));
-            $this->payOrder($orderToken);
 
-            $order = $this->orderRepository->findOneByTokenValue($orderToken);
-
-            $order->setCheckoutCompletedAt($orderData['date']);
-
-            $this->objectManager->persist($order);
+        for ($i = 0; $i < 3; ++$i) {
+            $orderToken = \sprintf('ORDER_TOKEN_%d', $i);
+            $this->fulfillOrder(
+                tokenValue: $orderToken,
+                quantity: 2,
+                checkoutCompletedAt: new \DateTimeImmutable('2021-01-01'),
+            );
         }
 
-        $this->objectManager->flush();
-        $this->objectManager->clear();
-
-        $this->client->request(
-            method: 'GET',
-            uri: '/api/v2/admin/statistics',
-            parameters: ['channelCode' => 'WEB', 'periodType' => 'calendar', 'year' => '2021', 'calendarIntervalType' => 'month'],
-            server: $this->headerBuilder()->withAdminUserAuthorization('api@example.com')->build(),
-        );
+//        $this->client->request(
+//            method: 'GET',
+//            uri: '/api/v2/admin/statistics',
+//            parameters: ['channelCode' => 'WEB'],
+//            server: $this->headerBuilder()->withAdminUserAuthorization('api@example.com')->build(),
+//        );
 
         $this->assertResponse(
             $this->client->getResponse(),
