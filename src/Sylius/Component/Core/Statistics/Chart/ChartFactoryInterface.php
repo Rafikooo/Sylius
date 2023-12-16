@@ -16,7 +16,7 @@ namespace Sylius\Component\Core\Statistics\Chart;
 interface ChartFactoryInterface
 {
     /**
-     * @param array<array-key, array<string, object>> $namedDatasets
+     * @param array<string, array<array{total: int, year: int, month: int}>> $namedDatasets
      */
     public function createTimeSeries(\DatePeriod $datePeriod, array $namedDatasets): ChartInterface;
 }

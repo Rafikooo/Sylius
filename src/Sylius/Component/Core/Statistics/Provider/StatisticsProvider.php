@@ -29,6 +29,6 @@ class StatisticsProvider implements StatisticsProviderInterface
         $salesTimeSeries = $this->salesTimeSeriesProvider->provide($datePeriod, $channel);
         $businessActivitySummary = $this->businessActivitySummaryProvider->provide($datePeriod, $channel);
 
-        return new Statistics($salesTimeSeries, $businessActivitySummary, $datePeriod);
+        return new Statistics($salesTimeSeries, $businessActivitySummary);
     }
 }

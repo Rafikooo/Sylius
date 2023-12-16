@@ -75,6 +75,9 @@ final class GetStatisticsAction
         return new JsonResponse(data: $this->serializer->serialize($this->handle($query), 'json'), json: true);
     }
 
+    /**
+     * @return array<array-key, array{propertyPath: string, message: string}>
+     */
     private function validateRequiredParameters(Request $request): array
     {
         $violations = [];
@@ -108,11 +111,6 @@ final class GetStatisticsAction
                         $parameterName,
                     ),
                 ];
-            } elseif ($parameterType === 'string' && !is_string($parameter)) {
-                $violations[] = [
-                    'propertyPath' => $parameterName,
-                    'message' => sprintf('Parameter "%s" must be a string.', $parameterName),
-                ];
             } elseif ($parameterType === 'dateInterval' && !$this->isValidInterval($parameter)) {
                 $violations[] = [
                     'propertyPath' => $parameterName,
@@ -122,6 +120,11 @@ final class GetStatisticsAction
                 $violations[] = [
                     'propertyPath' => $parameterName,
                     'message' => sprintf('Parameter "%s" must be an integer.', $parameterName),
+                ];
+            } elseif (!is_string($parameter)) {
+                $violations[] = [
+                    'propertyPath' => $parameterName,
+                    'message' => sprintf('Parameter "%s" must be a string.', $parameterName),
                 ];
             }
         }

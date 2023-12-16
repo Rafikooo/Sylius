@@ -25,7 +25,7 @@ final class ChartFactory implements ChartFactoryInterface
     }
 
     /**
-     * @param array<string, array<object>> $inputDatasets
+     * @param array<string, array<array{total: int, year: int, month: int}>> $inputDatasets
      */
     private function createChart(\DatePeriod $datePeriod, array $inputDatasets): ChartInterface
     {
@@ -36,6 +36,7 @@ final class ChartFactory implements ChartFactoryInterface
             $labels[] = $date->format('Y-m-d');
 
             foreach ($inputDatasets as $datasetName => $dataset) {
+                Assert::isInstanceOf($date, \DateTimeImmutable::class);
                 $datasets[$datasetName][] = $this->populateDataByDate($date, $dataset);
             }
         }
