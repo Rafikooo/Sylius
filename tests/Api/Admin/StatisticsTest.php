@@ -39,25 +39,44 @@ final class StatisticsTest extends JsonApiTestCase
     /**
      * @test
      */
-    public function it_gets_statistics_data_for_specific_year(): void {
-        $this->loadFixturesFromFiles(['authentication/api_administrator.yaml', 'channel.yaml', 'cart.yaml', 'shipping_method.yaml', 'payment_method.yaml']);
+    public function it_gets_fulfilled_orders_in_specific_year_statistics(): void
+    {
+        $this->loadFixturesFromFiles([
+            'authentication/api_administrator.yaml',
+            'channel.yaml',
+            'statistics.yaml',
+            'shipping_method.yaml',
+            'payment_method.yaml',
+        ]);
 
+        $this->fulfillOrder(
+            tokenValue: 'ORDER_FULFILLED_BEFORE_REQUESTED_PERIOD',
+            checkoutCompletedAt: new \DateTimeImmutable('2020-12-31T23:59:59'),
+        );
 
-        for ($i = 0; $i < 3; ++$i) {
-            $orderToken = \sprintf('ORDER_TOKEN_%d', $i);
-            $this->fulfillOrder(
-                tokenValue: $orderToken,
-                quantity: 2,
-                checkoutCompletedAt: new \DateTimeImmutable('2021-01-01'),
-            );
-        }
+        $this->fulfillOrder(
+            tokenValue: 'ORDER_FULFILLED_IN_REQUESTED_PERIOD',
+            checkoutCompletedAt: new \DateTimeImmutable('2021-01-01T00:00:00'),
+        );
 
-//        $this->client->request(
-//            method: 'GET',
-//            uri: '/api/v2/admin/statistics',
-//            parameters: ['channelCode' => 'WEB'],
-//            server: $this->headerBuilder()->withAdminUserAuthorization('api@example.com')->build(),
-//        );
+        $this->fulfillOrder(
+            tokenValue: 'ORDER_FULFILLED_AFTER_REQUESTED_PERIOD',
+            checkoutCompletedAt: new \DateTimeImmutable('2021-01-01T00:00:00'),
+        );
+
+        $parameters = [
+            'channelCode' => 'WEB',
+            'startDate' => '2023-01-01T00:00:00',
+            'dateInterval' => 'P1Y',
+            'endDate' => '2023-12-31T23:59:59',
+        ];
+
+        $this->client->request(
+            method: 'GET',
+            uri: '/api/v2/admin/statistics',
+            parameters: $parameters,
+            server: $this->headerBuilder()->withAdminUserAuthorization('api@example.com')->build(),
+        );
 
         $this->assertResponse(
             $this->client->getResponse(),

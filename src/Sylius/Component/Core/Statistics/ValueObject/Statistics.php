@@ -20,7 +20,6 @@ class Statistics
     public function __construct(
         private ChartInterface $chart,
         private BusinessActivitySummary $businessActivitySummary,
-        private Period $period,
     ) {
     }
 
@@ -32,10 +31,5 @@ class Statistics
     public function getBusinessActivitySummary(): BusinessActivitySummary
     {
         return $this->businessActivitySummary;
-    }
-
-    public function getIntervalType(): string
-    {
-        return $this->period->getIntervalType();
     }
 }

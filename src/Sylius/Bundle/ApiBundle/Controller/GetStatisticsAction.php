@@ -23,25 +23,15 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 final class GetStatisticsAction
 {
+    use HandleTrait;
+
     /** @var array<string> */
     private array $requiredParameters = [
         'channelCode' => 'string',
-        'dateTimeStart' => 'dateTime',
+        'startDate' => 'dateTime',
         'dateInterval' => 'dateInterval',
-        'recurrences' => 'int',
+        'endDate' => 'dateTime',
     ];
-
-    private array $supportedIntervals = [
-        'P1D',
-        'P1W',
-        'P2W',
-        'P1M',
-        'P3M',
-        'P6M',
-        'P1Y',
-    ];
-
-    use HandleTrait;
 
     public function __construct(
         MessageBusInterface $queryBus,
@@ -52,20 +42,6 @@ final class GetStatisticsAction
 
     public function __invoke(Request $request): Response
     {
-//        $start = new \DateTime($request->query->get('dateTimeStart'));
-//        $interval = new \DateInterval($request->query->get('dateInterval'));
-//        $result = [];
-//        $period = new \DatePeriod(
-//            $start,
-//            $interval,
-//            (int) $request->query->get('recurrences'),
-//        );
-//        foreach ($period as $date) {
-//            $result[] = $date->format('Y-m-d H:i:s');
-//        }
-//
-//        return new JsonResponse(data: $this->serializer->serialize($result, 'json'), json: true);
-
         $violations = $this->validateRequiredParameters($request);
 
         $parameters = $request->query->all();
@@ -79,12 +55,20 @@ final class GetStatisticsAction
         }
 
         $period = new \DatePeriod(
-            new \DateTimeImmutable($parameters['dateTimeStart']),
+            new \DateTimeImmutable($parameters['startDate']),
             new \DateInterval($parameters['dateInterval']),
-            (int) $parameters['recurrences'],
+            new \DateTimeImmutable($parameters['endDate']),
         );
 
-        dd($period->getDateInterval()->y, $period->getDateInterval()->m, $period->getDateInterval()->d);
+        try {
+            $this->validateEndDateAgainstInterval($period);
+        } catch (\InvalidArgumentException $exception) {
+            return new JsonResponse(
+                data: $this->serializer->serialize(['message' => $exception->getMessage()], 'json'),
+                status: Response::HTTP_BAD_REQUEST,
+                json: true,
+            );
+        }
 
         $query = new GetStatistics($period, $parameters['channelCode']);
 
@@ -159,5 +143,34 @@ final class GetStatisticsAction
         }
 
         return true;
+    }
+
+    /**
+     * Validates that the end date is a multiple of the interval.
+     * The end date is adjusted by subtracting one second to make it inclusive (closed interval).
+     * If the adjusted end date does not match the provided end date, an exception is thrown.
+     */
+    private function validateEndDateAgainstInterval(\DatePeriod $datePeriod): void
+    {
+        $currentDate = clone $datePeriod->getStartDate();
+        $endDate = $datePeriod->getEndDate();
+        $interval = $datePeriod->getDateInterval();
+
+        while ($currentDate <= $endDate) {
+            $currentDate = $currentDate->add($interval);
+        }
+
+        /** We shift to make closed interval. */
+        $intervalEndDate = $currentDate->modify('-1 second');
+
+        if ($intervalEndDate != $endDate) {
+            throw new \InvalidArgumentException(sprintf(
+                sprintf(
+                    'End date "%s" must be multiple of interval, expected "%s"',
+                    $endDate->format('Y-m-d H:i:s'),
+                    $intervalEndDate->format('Y-m-d H:i:s'),
+                ),
+            ));
+        }
     }
 }
