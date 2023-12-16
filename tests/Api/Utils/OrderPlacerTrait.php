@@ -119,7 +119,6 @@ trait OrderPlacerTrait
         $stateMachine->apply(OrderTransitions::TRANSITION_CANCEL);
 
         $objectManager->flush();
-        $objectManager->clear();
     }
 
     protected function payOrder(OrderInterface $order): OrderInterface
@@ -132,7 +131,6 @@ trait OrderPlacerTrait
         $stateMachine->apply(OrderPaymentTransitions::TRANSITION_PAY);
 
         $objectManager->flush();
-        $objectManager->clear();
 
         return $order;
     }

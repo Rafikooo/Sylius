@@ -528,4 +528,40 @@ class OrderRepository extends BaseOrderRepository implements OrderRepositoryInte
             ->getOneOrNullResult()
         ;
     }
+
+    public function sumPaidOrdersByChannelInPeriodGroupedByYearAndMonth(
+        ChannelInterface $channel,
+        \DateTimeInterface $startDate,
+        \DateTimeInterface $endDate,
+    ): array {
+        $a = $this->createQueryBuilder('o')
+            ->select('SUM(o.total) AS total')
+            ->addSelect('YEAR(o.checkoutCompletedAt) AS year')
+            ->addSelect('MONTH(o.checkoutCompletedAt) AS month')
+            ->andWhere('o.paymentState = :state')
+            ->andWhere('o.channel = :channel')
+            ->setParameter('state', OrderPaymentStates::STATE_PAID)
+            ->setParameter('channel', $channel)
+            ->andWhere('o.checkoutCompletedAt >= :startDate')
+            ->andWhere('o.checkoutCompletedAt <= :endDate')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->groupBy('year')
+            ->addGroupBy('month')
+            ->getQuery()
+            ->getArrayResult();
+
+        return $a;
+    }
+
+    private function createPaidOrdersSumInChannel(ChannelInterface $channel): QueryBuilder
+    {
+        return $this->createQueryBuilder('o')
+            ->addSelect('SUM(o.total) AS total')
+            ->andWhere('o.paymentState = :state')
+            ->andWhere('o.channel = :channel')
+            ->setParameter('state', OrderPaymentStates::STATE_PAID)
+            ->setParameter('channel', $channel)
+        ;
+    }
 }
