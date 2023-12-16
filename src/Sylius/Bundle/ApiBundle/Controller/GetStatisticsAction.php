@@ -118,7 +118,7 @@ final class GetStatisticsAction
                     'propertyPath' => $parameterName,
                     'message' => sprintf('Parameter "%s" must be a valid DateInterval string.', $parameterName),
                 ];
-            } elseif ($parameterType === 'int' && filter_var($parameter, FILTER_VALIDATE_INT) === false) {
+            } elseif ($parameterType === 'int' && filter_var($parameter, \FILTER_VALIDATE_INT) === false) {
                 $violations[] = [
                     'propertyPath' => $parameterName,
                     'message' => sprintf('Parameter "%s" must be an integer.', $parameterName),

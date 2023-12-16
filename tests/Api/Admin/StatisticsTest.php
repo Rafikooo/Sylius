@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Sylius\Tests\Api\Admin;
 
-use Doctrine\Persistence\ObjectManager;
-use Sylius\Component\Core\Repository\OrderRepositoryInterface;
 use Sylius\Tests\Api\JsonApiTestCase;
 use Sylius\Tests\Api\Utils\OrderPlacerTrait;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,19 +20,6 @@ use Symfony\Component\HttpFoundation\Response;
 final class StatisticsTest extends JsonApiTestCase
 {
     use OrderPlacerTrait;
-
-    private ?ObjectManager $objectManager;
-
-    private ?OrderRepositoryInterface $orderRepository;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->objectManager = $this->get('doctrine.orm.entity_manager');
-
-        $this->orderRepository = $this->get('sylius.repository.order');
-    }
 
     /**
      * @test
@@ -51,23 +36,26 @@ final class StatisticsTest extends JsonApiTestCase
 
         $this->fulfillOrder(
             tokenValue: 'ORDER_FULFILLED_BEFORE_REQUESTED_PERIOD',
-            checkoutCompletedAt: new \DateTimeImmutable('2020-12-31T23:59:59'),
+            productVariantCode: 'product_variant_that_costs_1000',
+            checkoutCompletedAt: new \DateTimeImmutable('2022-12-31T23:59:59'),
         );
 
         $this->fulfillOrder(
-            tokenValue: 'ORDER_FULFILLED_IN_REQUESTED_PERIOD',
-            checkoutCompletedAt: new \DateTimeImmutable('2021-01-01T00:00:00'),
+            tokenValue: 'ORDER_FULFILLED_IN_JANUARY',
+            productVariantCode: 'product_variant_that_costs_1000',
+            checkoutCompletedAt: new \DateTimeImmutable('2023-01-01T00:00:00'),
         );
 
         $this->fulfillOrder(
             tokenValue: 'ORDER_FULFILLED_AFTER_REQUESTED_PERIOD',
-            checkoutCompletedAt: new \DateTimeImmutable('2021-01-01T00:00:00'),
+            productVariantCode: 'product_variant_that_costs_1000',
+            checkoutCompletedAt: new \DateTimeImmutable('2024-01-01T00:00:00'),
         );
 
         $parameters = [
             'channelCode' => 'WEB',
             'startDate' => '2023-01-01T00:00:00',
-            'dateInterval' => 'P1Y',
+            'dateInterval' => 'P1M',
             'endDate' => '2023-12-31T23:59:59',
         ];
 
@@ -129,47 +117,5 @@ final class StatisticsTest extends JsonApiTestCase
             'admin/statistics/get_statistics_missing_channel_code_response',
             Response::HTTP_BAD_REQUEST,
         );
-    }
-
-    public static function provideOrdersForDifferentPeriods(): iterable
-    {
-        yield 'Orders placed in 2021' => [
-            'orders' => [
-                [
-                    'date' => new \DateTime('2021-01-01'),
-                ],
-                [
-                    'date' => new \DateTime('2021-02-12'),
-                ],
-                [
-                    'date' => new \DateTime('2021-03-15'),
-                ],
-                [
-                    'date' => new \DateTime('2021-09-10'),
-                ],
-                [
-                    'date' => new \DateTime('2021-12-31'),
-                ],
-            ],
-            'expectedResponse' => 5,
-        ];
-
-//        yield 'Orders placed in 2021-10' => [
-//            'orders' => [
-//                [
-//                    'date' => new \DateTime('2021-10-01'),
-//                ],
-//                [
-//                    'date' => new \DateTime('2021-10-12'),
-//                ],
-//                [
-//                    'date' => new \DateTime('2021-10-17'),
-//                ],
-//                [
-//                    'date' => new \DateTime('2021-10-31'),
-//                ],
-//            ],
-//            'expectedResponse' => 4
-//        ];
     }
 }
