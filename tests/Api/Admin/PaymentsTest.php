@@ -41,6 +41,7 @@ final class PaymentsTest extends JsonApiTestCase
             'shipping_method.yaml',
             'payment_method.yaml',
         ]);
+
         $header = array_merge($this->logInAdminUser('api@example.com'), self::CONTENT_TYPE_HEADER);
 
         $tokenValue = 'nAWw2jewpA';

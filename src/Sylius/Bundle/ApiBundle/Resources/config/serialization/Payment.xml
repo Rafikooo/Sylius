@@ -20,6 +20,7 @@
             <group>admin:order:index</group>
             <group>sylius:admin:order:index</group>
             <group>admin:order:show</group>
+            <group>sylius:admin:order_payments:index</group>
             <group>sylius:admin:order:show</group>
             <group>admin:payment:index</group>
             <group>sylius:admin:payment:index</group>
@@ -51,6 +52,7 @@
             <group>sylius:admin:payment:index</group>
             <group>admin:payment:show</group>
             <group>sylius:admin:payment:show</group>
+            <group>sylius:admin:order_payments:index</group>
             <group>shop:payment:show</group>
             <group>sylius:shop:payment:show</group>
         </attribute>

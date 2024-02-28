@@ -477,9 +477,13 @@
                 <attribute name="path">/admin/orders/{tokenValue}/shipments</attribute>
             </subresourceOperation>
 
-            <subresourceOperation name="payments_get_subresource">
+            <subresourceOperation name="api_order_payments_get_subresource">
                 <attribute name="method">GET</attribute>
-                <attribute name="path">/admin/orders/{tokenValue}/payments</attribute>
+                <attribute name="normalization_context">
+                    <attribute name="groups">
+                        <attribute>sylius:admin:order_payments:index</attribute>
+                    </attribute>
+                </attribute>
             </subresourceOperation>
 
             <subresourceOperation name="adjustments_get_subresource">
@@ -501,7 +505,7 @@
         <property name="shipments" writable="false">
             <subresource resourceClass="%sylius.model.shipment.class%" />
         </property>
-        <property name="payments" writable="false">
+        <property name="payments" writable="false" readableLink="false" writableLink="false">
             <subresource resourceClass="%sylius.model.payment.class%" />
         </property>
         <property name="state" writable="false" />
