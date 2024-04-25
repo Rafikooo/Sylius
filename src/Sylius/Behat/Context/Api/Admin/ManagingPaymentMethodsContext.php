@@ -20,13 +20,14 @@ use Sylius\Behat\Context\Api\Admin\Helper\ValidationTrait;
 use Sylius\Behat\Context\Api\Resources;
 use Sylius\Behat\Service\Converter\SectionAwareIriConverter;
 use Sylius\Behat\Service\SharedStorageInterface;
+use Sylius\Component\Core\Formatter\StringInflector;
 use Sylius\Component\Core\Model\AdminUserInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
-use Sylius\Component\Payment\Model\PaymentMethodInterface;
+use Sylius\Component\Core\Model\PaymentMethodInterface;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Webmozart\Assert\Assert;
 
-final class ManagingPaymentMethodsContext implements Context
+final readonly class ManagingPaymentMethodsContext implements Context
 {
     use ValidationTrait;
 
@@ -46,6 +47,38 @@ final class ManagingPaymentMethodsContext implements Context
     public function iWantToModifyAPaymentMethod(PaymentMethodInterface $paymentMethod): void
     {
         $this->client->buildUpdateRequest(Resources::PAYMENT_METHODS, $paymentMethod->getCode());
+
+        if ($paymentMethod->getName() !== 'Offline') {
+            $this->client->addRequestData('gatewayConfig', [
+                'gatewayName' => $paymentMethod->getGatewayConfig()->getGatewayName(),
+                'factoryName' => $paymentMethod->getGatewayConfig()->getFactoryName(),
+            ]);
+        }
+    }
+
+    /**
+     * @When I set its Username as :username, Password as :password and Signature as :signature
+     */
+    public function iSetItsUsernameAsPasswordAsAndSignatureAs(string $username, string $password, string $signature): void
+    {
+        /** @var PaymentMethodInterface $paymentMethod */
+        $paymentMethod = $this->sharedStorage->get('payment_method');
+        $gatewayConfigurationIri = $this->sectionAwareIriConverter->getIriFromResourceInSection(
+            $paymentMethod->getGatewayConfig(), 'admin'
+        );
+
+        $this->client->addRequestData(
+            'gatewayConfig',
+            [
+                '@id' => $gatewayConfigurationIri,
+                'config' => [
+                    'username' => $username,
+                    'password' => $password,
+                    'signature' => $signature,
+                    'sandbox' => true,
+                ],
+            ],
+        );
     }
 
     /**
@@ -57,6 +90,15 @@ final class ManagingPaymentMethodsContext implements Context
     {
         $this->client->addRequestData('translations', [$localeCode => ['name' => $name]]);
     }
+
+    /**
+     * @When I enable sandbox mode
+     */
+    public function iEnableMode(): void
+    {
+        $this->client->addRequestData('gatewayConfig', ['config' => ['sandbox' => true]]);
+    }
+
 
     /**
      * @When I do not name it
@@ -300,8 +342,8 @@ final class ManagingPaymentMethodsContext implements Context
             'gatewayConfig',
             [
                 'config' => [
-                   $element => 'TEST',
-                   $element === 'secret_key' ? 'publishable_key' : 'secret_key' => null,
+                    $element => 'TEST',
+                    $element === 'secret_key' ? 'publishable_key' : 'secret_key' => null,
                 ],
             ],
         );
@@ -355,7 +397,7 @@ final class ManagingPaymentMethodsContext implements Context
         /** @var AdminUserInterface $adminUser */
         $adminUser = $this->sharedStorage->get('administrator');
 
-        $this->client->buildUpdateRequest(Resources::ADMINISTRATORS, (string) $adminUser->getId());
+        $this->client->buildUpdateRequest(Resources::ADMINISTRATORS, (string)$adminUser->getId());
 
         $this->client->updateRequestData(['localeCode' => $localeCode]);
         $this->client->update();
@@ -611,7 +653,8 @@ final class ManagingPaymentMethodsContext implements Context
         PaymentMethodInterface $paymentMethod,
         string $instructions,
         string $localeCode,
-    ): void {
+    ): void
+    {
         $translations = $this->responseChecker->getValue($this->client->show(Resources::PAYMENT_METHODS, $paymentMethod->getCode()), 'translations');
 
         Assert::same(
@@ -627,7 +670,8 @@ final class ManagingPaymentMethodsContext implements Context
     public function thePaymentMethodShouldBeAvailableInChannel(
         PaymentMethodInterface $paymentMethod,
         ChannelInterface $channel,
-    ): void {
+    ): void
+    {
         $this->client->show(Resources::PAYMENT_METHODS, $paymentMethod->getCode());
         $channelsArray = $this->responseChecker->getValue($this->client->getLastResponse(), 'channels');
 
@@ -674,12 +718,14 @@ final class ManagingPaymentMethodsContext implements Context
     }
 
     /**
-     * @Then this payment method :element should be :value
+     * @Then /^this payment method "([^"]+)" should be "([^"]+)"$/
      */
     public function thisPaymentMethodElementShouldBe(
         string $element,
         string $value,
     ): void {
+        $element = StringInflector::nameToLowercaseCode($element);
+
         if ($element === 'name') {
             Assert::inArray(
                 $value,
@@ -693,6 +739,35 @@ final class ManagingPaymentMethodsContext implements Context
         Assert::true(
             $this->responseChecker->hasItemWithValue($this->client->index(Resources::PAYMENT_METHODS), $element, $value),
             sprintf('Payment method should have %s "%s", but it does,', $element, $value),
+        );
+    }
+
+    /**
+     * @Then /^its gateway configuration "([^"]+)" field should be "([^"]+)"$/
+     */
+    public function thisPaymentMethodGatewayConfigurationElementShouldBe(
+        string $element,
+        string $value,
+    ): void {
+        $element = StringInflector::nameToLowercaseCode($element);
+
+        Assert::true(
+            $this->responseChecker->hasValuesInSubresourceObject($this->client->index(Resources::PAYMENT_METHODS), $element, $value),
+            sprintf('Payment method should have %s "%s", but it does,', $element, $value),
+        );
+    }
+
+    /**
+     * @Then this payment method should be in sandbox mode
+     */
+    public function thisPaymentMethodShouldBeInSandboxMode(): void
+    {
+        $response = $this->client->getLastResponse();
+        $gatewayConfig = $this->responseChecker->getValue($response, 'gatewayConfig');
+
+        Assert::true(
+            $gatewayConfig['config']['sandbox'],
+            'Payment method should be in sandbox mode',
         );
     }
 
@@ -751,12 +826,35 @@ final class ManagingPaymentMethodsContext implements Context
         $this->thePaymentMethodShouldAppearInTheRegistry($paymentMethod->getName());
     }
 
+    /**
+     * @When I update its :field field with :value
+     */
+    public function iConfigureItsGatewayDataField(string $field, string $value): void
+    {
+        $availableFields = ['Publishable key', 'Secret key', 'Username', 'Password', 'Signature', 'Sandbox'];
+
+        if (!in_array($field, $availableFields)) {
+            throw new \InvalidArgumentException(sprintf('There is no configuration for "%s" field.', $field));
+        }
+
+        /** @var PaymentMethodInterface $paymentMethod */
+        $paymentMethod = $this->sharedStorage->get('payment_method');
+        $gatewayConfigurationIri = $this->sectionAwareIriConverter->getIriFromResourceInSection(
+            $paymentMethod->getGatewayConfig(), 'admin'
+        );
+
+        $this->client->addRequestData('gatewayConfig', [
+            '@id' => $gatewayConfigurationIri,
+            'config' => [StringInflector::nameToLowercaseCode($field) => $value]
+        ]);
+    }
+
     private function getAdminLocaleCode(): string
     {
         /** @var AdminUserInterface $adminUser */
         $adminUser = $this->sharedStorage->get('administrator');
 
-        $response = $this->client->show(Resources::ADMINISTRATORS, (string) $adminUser->getId());
+        $response = $this->client->show(Resources::ADMINISTRATORS, (string)$adminUser->getId());
 
         return $this->responseChecker->getValue($response, 'localeCode');
     }
@@ -778,6 +876,6 @@ final class ManagingPaymentMethodsContext implements Context
     {
         $paymentMethods = $this->responseChecker->getCollection($this->client->index(Resources::PAYMENT_METHODS));
 
-        return array_map(fn (array $paymentMethod) => $paymentMethod['translations']['en_US']['name'], $paymentMethods);
+        return array_map(fn(array $paymentMethod) => $paymentMethod['translations']['en_US']['name'], $paymentMethods);
     }
 }

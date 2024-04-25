@@ -29,6 +29,10 @@ interface UpdatePageInterface extends BaseUpdatePageInterface
 
     public function setPaypalGatewaySignature(string $signature): void;
 
+    public function setStripeSecretKey(string $secretKey): void;
+
+    public function setStripePublishableKey(string $publishableKey): void;
+
     public function isCodeDisabled(): bool;
 
     public function isFactoryNameFieldDisabled(): bool;

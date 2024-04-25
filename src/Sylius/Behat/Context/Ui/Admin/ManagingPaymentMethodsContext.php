@@ -22,10 +22,11 @@ use Sylius\Behat\Page\Admin\Crud\IndexPageInterface;
 use Sylius\Behat\Page\Admin\PaymentMethod\CreatePageInterface;
 use Sylius\Behat\Page\Admin\PaymentMethod\UpdatePageInterface;
 use Sylius\Behat\Service\Resolver\CurrentPageResolverInterface;
+use Sylius\Component\Core\Formatter\StringInflector;
 use Sylius\Component\Payment\Model\PaymentMethodInterface;
 use Webmozart\Assert\Assert;
 
-final class ManagingPaymentMethodsContext implements Context
+final readonly class ManagingPaymentMethodsContext implements Context
 {
     use ValidationTrait;
 
@@ -33,11 +34,11 @@ final class ManagingPaymentMethodsContext implements Context
      * @param string[] $gatewayFactories
      */
     public function __construct(
-        private readonly CreatePageInterface $createPage,
-        private readonly IndexPageInterface $indexPage,
-        private readonly UpdatePageInterface $updatePage,
-        private readonly CurrentPageResolverInterface $currentPageResolver,
-        private readonly array $gatewayFactories,
+        private CreatePageInterface $createPage,
+        private IndexPageInterface $indexPage,
+        private UpdatePageInterface $updatePage,
+        private CurrentPageResolverInterface $currentPageResolver,
+        private array $gatewayFactories,
     ) {
     }
 
@@ -100,8 +101,6 @@ final class ManagingPaymentMethodsContext implements Context
     /**
      * @When I delete the :paymentMethod payment method
      * @When I try to delete the :paymentMethod payment method
-     *
-     * @throws UnexpectedPageException
      */
     public function iDeletePaymentMethod(PaymentMethodInterface $paymentMethod): void
     {
@@ -110,11 +109,14 @@ final class ManagingPaymentMethodsContext implements Context
     }
 
     /**
-     * @Then this payment method :element should be :value
+     * @Then /^this payment method "([^"]+)" should be "([^"]+)"$/
      */
     public function thisPaymentMethodElementShouldBe(string $element, string $value): void
     {
-        Assert::true($this->updatePage->hasResourceValues([$element => $value]));
+        Assert::true(
+            $this->updatePage->hasResourceValues([StringInflector::nameToLowercaseCode($element) => $value]),
+            sprintf('Expected "%s" to be "%s", but it is not.', StringInflector::nameToLowercaseCode($element), $value),
+        );
     }
 
     /**
@@ -511,9 +513,25 @@ final class ManagingPaymentMethodsContext implements Context
     }
 
     /**
-     * @When I configure it with only :element
+     * @When I update its :field field with :value
      */
-    public function iConfigureItWithOnly(string $element): void
+    public function iConfigureItsGatewayDataField(string $field, string $value): void
+    {
+        match ($field) {
+            'Publishable key' => $this->updatePage->setStripePublishableKey($value),
+            'Secret key' => $this->updatePage->setStripeSecretKey($value),
+            'Username' => $this->updatePage->setPaypalGatewayUsername($value),
+            'Password' => $this->updatePage->setPaypalGatewayPassword($value),
+            'Signature' => $this->updatePage->setPaypalGatewaySignature($value),
+            'Sandbox' => $this->updatePage->setPaypalGatewaySandbox($value === 'yes'),
+            default => throw new \InvalidArgumentException(sprintf('There is no configuration for "%s" field.', $field)),
+        };
+    }
+
+    /**
+     * @When I configure it with( only) :element
+     */
+    public function iConfigureItWith(string $element): void
     {
         match ($element) {
             'publishable key' => $this->createPage->setStripePublishableKey('TEST'),
