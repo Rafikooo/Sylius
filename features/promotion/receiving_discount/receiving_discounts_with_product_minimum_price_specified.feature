@@ -13,7 +13,7 @@ Feature: Receiving discounts with product minimum price specified
         And this product has "PHP T-Shirt" variant priced at "$50.00"
         And the "PHP T-Shirt" variant has minimum price of "$45.00" in the "United States" channel
         And the store has a product "Symfony Mug" priced at "$40.00"
-        And the store has a product "PHP Mug" priced at "$20.00"
+        And the store has a product "PHP Mug" priced at "$20.00"tyftyf
         And there is a promotion "Christmas sale"
 
     @ui @api
