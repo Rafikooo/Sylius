@@ -21,6 +21,7 @@ final class NotificationsElement extends Element implements NotificationsElement
 {
     public function hasNotification(string $type, string $message): bool
     {
+        usleep(1500000); // Wait for the flash message to appear
         $flashesContainer = $this->getElement('flashes_container');
 
         if (DriverHelper::isJavascript($this->getDriver())) {
