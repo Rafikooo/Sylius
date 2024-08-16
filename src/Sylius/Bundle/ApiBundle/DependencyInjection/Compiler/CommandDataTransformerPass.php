@@ -26,7 +26,7 @@ final readonly class CommandDataTransformerPass implements CompilerPassInterface
         $commandDataTransformersChainDefinition = new Definition(CommandAwareInputDataTransformer::class);
 
         $taggedServices = $container->findTaggedServiceIds('sylius.api.command_data_transformer');
-
+dd($taggedServices);
         uasort($taggedServices, function (array $firstTag, array $secondTag) {
             return ($secondTag[0]['priority'] ?? 0) <=> ($firstTag[0]['priority'] ?? 0);
         });

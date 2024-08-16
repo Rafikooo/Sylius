@@ -23,6 +23,7 @@ final class CommandAwareInputDataTransformer implements DataTransformerInterface
 
     public function __construct(CommandDataTransformerInterface ...$commandDataTransformers)
     {
+        dd(":D");
         $this->commandDataTransformers = $commandDataTransformers;
     }
 
