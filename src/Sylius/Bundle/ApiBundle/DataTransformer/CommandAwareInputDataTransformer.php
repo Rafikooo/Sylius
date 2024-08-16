@@ -13,17 +13,15 @@ declare(strict_types=1);
 
 namespace Sylius\Bundle\ApiBundle\DataTransformer;
 
-use ApiPlatform\Core\DataTransformer\DataTransformerInterface;
 use Sylius\Bundle\ApiBundle\Command\CommandAwareDataTransformerInterface;
 
-final class CommandAwareInputDataTransformer implements DataTransformerInterface
+final class CommandAwareInputDataTransformer
 {
     /** @var CommandDataTransformerInterface[] */
     private array $commandDataTransformers;
 
     public function __construct(CommandDataTransformerInterface ...$commandDataTransformers)
     {
-        dd(":D");
         $this->commandDataTransformers = $commandDataTransformers;
     }
 
