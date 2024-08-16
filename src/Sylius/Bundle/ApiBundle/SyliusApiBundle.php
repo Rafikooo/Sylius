@@ -24,7 +24,6 @@ final class SyliusApiBundle extends Bundle
 {
     public function build(ContainerBuilder $container): void
     {
-        $container->addCompilerPass(new CommandDataTransformerPass());
         $container->addCompilerPass(new FlattenExceptionNormalizerDecoratorCompilerPass());
         $container->addCompilerPass(new LegacyErrorHandlingCompilerPass());
         $container->addCompilerPass(new ExtractorMergingCompilerPass());
