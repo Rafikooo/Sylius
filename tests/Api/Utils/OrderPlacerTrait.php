@@ -114,7 +114,7 @@ trait OrderPlacerTrait
             orderTokenValue: $tokenValue,
             shipmentId: $shipmentId,
             shippingMethodCode: $shippingMethodCode,
-    );
+        );
 
         $envelope = $this->commandBus->dispatch($chooseShippingMethodCommand);
 
