@@ -182,7 +182,6 @@ final class ShippingMethodsTest extends JsonApiTestCase
         );
 
         $this->assertResponseViolations(
-            $this->client->getResponse(),
             [
                 [
                     'propertyPath' => 'configuration[WEB][amount]',
@@ -272,7 +271,6 @@ final class ShippingMethodsTest extends JsonApiTestCase
         );
 
         $this->assertResponseViolations(
-            $this->client->getResponse(),
             [
                 [
                     'propertyPath' => 'rules[0].configuration[weight]',
@@ -283,19 +281,19 @@ final class ShippingMethodsTest extends JsonApiTestCase
                     'message' => 'This value should be of type numeric.',
                 ],
                 [
-                    'propertyPath' => 'rules[2].configuration[MOBILE][amount]',
-                    'message' => 'This value should be of type numeric.',
-                ],
-                [
                     'propertyPath' => 'rules[2].configuration[WEB][amount]',
                     'message' => 'This value should be of type numeric.',
                 ],
                 [
-                    'propertyPath' => 'rules[3].configuration[MOBILE][amount]',
+                    'propertyPath' => 'rules[2].configuration[MOBILE][amount]',
                     'message' => 'This value should be of type numeric.',
                 ],
                 [
                     'propertyPath' => 'rules[3].configuration[WEB][amount]',
+                    'message' => 'This value should be of type numeric.',
+                ],
+                [
+                    'propertyPath' => 'rules[3].configuration[MOBILE][amount]',
                     'message' => 'This value should be of type numeric.',
                 ],
             ],
@@ -432,7 +430,6 @@ final class ShippingMethodsTest extends JsonApiTestCase
         );
 
         $this->assertResponseViolations(
-            $this->client->getResponse(),
             [
                 [
                     'propertyPath' => 'configuration[WEB][amount]',
@@ -481,7 +478,6 @@ final class ShippingMethodsTest extends JsonApiTestCase
         );
 
         $this->assertResponseViolations(
-            $this->client->getResponse(),
             [
                 [
                     'propertyPath' => 'translations[en_US].locale',
@@ -549,7 +545,6 @@ final class ShippingMethodsTest extends JsonApiTestCase
         );
 
         $this->assertResponseViolations(
-            $this->client->getResponse(),
             [
                 [
                     'propertyPath' => 'rules[0].configuration[weight]',
@@ -560,19 +555,19 @@ final class ShippingMethodsTest extends JsonApiTestCase
                     'message' => 'This value should be of type numeric.',
                 ],
                 [
-                    'propertyPath' => 'rules[2].configuration[MOBILE][amount]',
-                    'message' => 'This value should be of type numeric.',
-                ],
-                [
                     'propertyPath' => 'rules[2].configuration[WEB][amount]',
                     'message' => 'This value should be of type numeric.',
                 ],
                 [
-                    'propertyPath' => 'rules[3].configuration[MOBILE][amount]',
+                    'propertyPath' => 'rules[2].configuration[MOBILE][amount]',
                     'message' => 'This value should be of type numeric.',
                 ],
                 [
                     'propertyPath' => 'rules[3].configuration[WEB][amount]',
+                    'message' => 'This value should be of type numeric.',
+                ],
+                [
+                    'propertyPath' => 'rules[3].configuration[MOBILE][amount]',
                     'message' => 'This value should be of type numeric.',
                 ],
             ],
@@ -609,7 +604,6 @@ final class ShippingMethodsTest extends JsonApiTestCase
         );
 
         $this->assertResponseViolations(
-            $this->client->getResponse(),
             [
                 [
                     'propertyPath' => 'rules[0].type',

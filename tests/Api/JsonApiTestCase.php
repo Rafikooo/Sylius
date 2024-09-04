@@ -269,15 +269,21 @@ abstract class JsonApiTestCase extends BaseJsonApiTestCase
      *
      * @param array<array-key, mixed> $expectedViolations
      */
-    protected function assertResponseViolations(Response $response, array $expectedViolations): void
+    protected function assertResponseViolations(array $expectedViolations, bool $assertViolationsCount = true): void
     {
+        $response = $this->client->getResponse();
+
         if (isset($_SERVER['OPEN_ERROR_IN_BROWSER']) && true === $_SERVER['OPEN_ERROR_IN_BROWSER']) {
             $this->showErrorInBrowserIfOccurred($response);
         }
 
         $this->assertResponseCode($response, Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertJsonHeader($response);
-        $this->assertJsonResponseViolations($response, $expectedViolations);
+
+        $assertViolationsCount ?
+            $this->assertResponseExactViolations($expectedViolations) :
+            $this->assertJsonResponseContainsViolations($response, $expectedViolations)
+        ;
     }
 
     /**
@@ -285,18 +291,61 @@ abstract class JsonApiTestCase extends BaseJsonApiTestCase
      *
      * @param array<array-key, mixed> $expectedViolations
      */
-    protected function assertJsonResponseViolations(
+    protected function assertResponseExactViolations(array $expectedViolations): void
+    {
+        $response = $this->client->getResponse();
+
+        $responseContent = $response->getContent() ?: '';
+        $this->assertNotEmpty($responseContent);
+
+        $actualViolations = json_decode($responseContent, true)['violations'];
+        $actualDescription = json_decode($responseContent, true)['hydra:description'];
+
+        array_walk($actualViolations, function (&$item) {
+            unset($item['code']);
+        });
+
+        $mappedViolations = array_map(function ($violation) {
+            if (empty($violation['propertyPath'])) {
+                return $violation['message'];
+            }
+
+            return $violation['propertyPath'] . ': ' . $violation['message'];
+        }, $expectedViolations);
+
+        $expectedDescription = implode("\n", $mappedViolations);
+
+        $expected = [
+            '@context' => '/api/v2/contexts/ConstraintViolationList',
+            '@type' => 'ConstraintViolationList',
+            'hydra:title' => 'An error occurred',
+            'hydra:description' => $expectedDescription,
+            'violations' => $expectedViolations,
+        ];
+
+        $actual = [
+            '@context' => '/api/v2/contexts/ConstraintViolationList',
+            '@type' => 'ConstraintViolationList',
+            'hydra:title' => 'An error occurred',
+            'hydra:description' => $actualDescription,
+            'violations' => $actualViolations,
+        ];
+
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @throws \Exception
+     *
+     * @param array<array-key, mixed> $expectedViolations
+     */
+    private function assertJsonResponseContainsViolations(
         Response $response,
         array $expectedViolations,
-        bool $assertViolationsCount = true,
     ): void {
         $responseContent = $response->getContent() ?: '';
         $this->assertNotEmpty($responseContent);
         $violations = json_decode($responseContent, true)['violations'] ?? [];
-
-        if ($assertViolationsCount) {
-            $this->assertCount(count($expectedViolations), $violations, $responseContent);
-        }
 
         $violationMap = [];
         foreach ($violations as $violation) {

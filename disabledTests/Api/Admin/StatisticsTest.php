@@ -44,7 +44,6 @@ final class StatisticsTest extends JsonApiTestCase
         );
 
         $this->assertResponseViolations(
-            $this->client->getResponse(),
             [
                 [
                     'propertyPath' => '',
@@ -74,7 +73,7 @@ final class StatisticsTest extends JsonApiTestCase
             server: $this->headerBuilder()->withAdminUserAuthorization('api@example.com')->build(),
         );
 
-        $this->assertResponseViolations($this->client->getResponse(), $expectedViolations);
+        $this->assertResponseViolations($expectedViolations);
     }
 
     public function missingQueryParameters(): iterable
