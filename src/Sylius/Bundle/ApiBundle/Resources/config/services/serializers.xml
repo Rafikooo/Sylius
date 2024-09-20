@@ -25,12 +25,6 @@
             <tag name="serializer.normalizer" priority="64" />
         </service>
 
-        <service id="sylius_api.denormalizer.command_arguments" class="Sylius\Bundle\ApiBundle\Serializer\Denormalizer\CommandArgumentsDenormalizer">
-            <argument type="service" id="sylius_api.denormalizer.command" />
-            <argument type="service" id="sylius_api.converter.iri_to_identifier" />
-            <tag name="serializer.normalizer" priority="128" />
-        </service>
-
         <service id="sylius_api.denormalizer.command" class="Sylius\Bundle\ApiBundle\Serializer\Denormalizer\CommandDenormalizer">
             <argument type="service" id="api_platform.serializer.normalizer.item" />
             <argument type="service" id="serializer.name_converter.metadata_aware" />
