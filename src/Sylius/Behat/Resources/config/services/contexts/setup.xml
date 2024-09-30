@@ -54,7 +54,8 @@
         <service id="sylius.behat.context.setup.checkout.address" class="Sylius\Behat\Context\Setup\Checkout\AddressContext">
             <argument type="service" id="sylius.behat.shared_storage" />
             <argument type="service" id="sylius.command_bus" />
-            <argument type="service" id="sylius.factory.address" />
+            <argument type="service" id="sylius.behat.factory.address" />
+            <argument type="service" id="sylius.converter.country_name" />
         </service>
 
         <service id="sylius.behat.context.setup.channel" class="Sylius\Behat\Context\Setup\ChannelContext">
@@ -242,6 +243,7 @@
             <argument type="service" id="sylius.behat.shop_security" />
             <argument type="service" id="sylius.fixture.example_factory.shop_user" />
             <argument type="service" id="sylius.repository.shop_user" />
+            <argument type="service" id="lexik_jwt_authentication.jwt_manager" />
         </service>
 
         <service id="sylius.behat.context.setup.shop_api_security" class="Sylius\Behat\Context\Setup\ShopSecurityContext">
@@ -249,6 +251,7 @@
             <argument type="service" id="sylius.behat.api_security" />
             <argument type="service" id="sylius.fixture.example_factory.shop_user" />
             <argument type="service" id="sylius.repository.shop_user" />
+            <argument type="service" id="lexik_jwt_authentication.jwt_manager" />
         </service>
 
         <service id="sylius.behat.context.setup.shipping" class="Sylius\Behat\Context\Setup\ShippingContext">
