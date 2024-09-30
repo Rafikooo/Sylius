@@ -36,6 +36,7 @@ default:
                 - sylius.behat.context.setup.checkout.address
                 - sylius.behat.context.setup.geographical
                 - sylius.behat.context.setup.customer
+                - sylius.behat.context.setup.admin_api_security
                 - sylius.behat.context.setup.geographical
                 - sylius.behat.context.setup.locale
                 - sylius.behat.context.setup.payment
@@ -49,10 +50,11 @@ default:
                 - sylius.behat.context.setup.zone
                 - Sylius\Behat\Context\Setup\CatalogPromotionContext
 
+                - sylius.behat.context.api.shop.address
                 - sylius.behat.context.api.shop.cart
                 - sylius.behat.context.api.shop.channel
-                - sylius.behat.context.api.shop.address
                 - sylius.behat.context.api.shop.checkout
+                - sylius.behat.context.api.shop.checkout.shipping
                 - sylius.behat.context.api.shop.login
                 - sylius.behat.context.api.shop.order
 

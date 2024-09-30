@@ -818,11 +818,21 @@ final class CheckoutContext implements Context
 
     /**
      * @Then I should not be able to proceed checkout shipping step
+     * @Then I should not be able to proceed to the checkout shipping step
      */
-    public function iShouldNotBeAbleToProceedCheckoutShippingStep(): void
+    public function iShouldNotBeAbleToProceedToTheCheckoutShippingStep(): void
     {
-        $this->iShouldBeOnTheCheckoutShippingStep();
-        Assert::isEmpty($this->getCart()['shipments']);
+        $response = $this->client->show(Resources::ORDERS, $this->sharedStorage->get('cart_token'));
+
+        Assert::same(
+            $this->responseChecker->getValue($response, 'checkoutState'),
+            OrderCheckoutStates::STATE_ADDRESSED,
+            'The current checkout state is not addressed',
+        );
+        Assert::isEmpty(
+            $this->responseChecker->getValue($response, 'shipments'),
+            'The current cart has shipments but it should not',
+        );
     }
 
     /**

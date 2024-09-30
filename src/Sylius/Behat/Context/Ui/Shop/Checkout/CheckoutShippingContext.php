@@ -76,6 +76,10 @@ final readonly class CheckoutShippingContext implements Context
      */
     public function iCompleteTheShippingStep(): void
     {
+        if (!$this->selectShippingPage->isOpen()) {
+            $this->selectShippingPage->open();
+        }
+
         $this->selectShippingPage->nextStep();
     }
 
@@ -134,8 +138,9 @@ final readonly class CheckoutShippingContext implements Context
 
     /**
      * @Then I should be informed that my order cannot be shipped to this address
+     * @Then I should be informed that there are currently no shipping methods available for my shipping address
      */
-    public function iShouldBeInformedThatMyOrderCannotBeShippedToThisAddress()
+    public function iShouldBeInformedThatThereAreCurrentlyNoShippingMethodsAvailableForMyShippingAddress(): void
     {
         Assert::true($this->selectShippingPage->hasNoShippingMethodsMessage());
     }
@@ -222,8 +227,9 @@ final readonly class CheckoutShippingContext implements Context
 
     /**
      * @Then I should not be able to proceed checkout shipping step
+     * @Then I should not be able to proceed to the checkout shipping step
      */
-    public function iShouldNotBeAbleToProceedCheckoutShippingStep(): void
+    public function iShouldNotBeAbleToProceedToTheCheckoutShippingStep(): void
     {
         $this->selectShippingPage->tryToOpen();
 
