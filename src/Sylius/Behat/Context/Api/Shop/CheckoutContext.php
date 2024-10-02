@@ -95,19 +95,6 @@ final class CheckoutContext implements Context
     }
 
     /**
-     * @Given I have proceeded order with :shippingMethod shipping method and :paymentMethod payment
-     * @Given I proceeded with :shippingMethod shipping method and :paymentMethod payment
-     * @When I proceed with :shippingMethod shipping method and :paymentMethod payment
-     */
-    public function iProceedOrderWithShippingMethodAndPayment(
-        ShippingMethodInterface $shippingMethod,
-        PaymentMethodInterface $paymentMethod,
-    ): void {
-        $this->iProceededWithShippingMethod($shippingMethod);
-        $this->iChoosePaymentMethod($paymentMethod);
-    }
-
-    /**
      * @Given I am at the checkout addressing step
      * @When I complete the payment step
      * @When I complete the shipping step
@@ -382,46 +369,6 @@ final class CheckoutContext implements Context
     }
 
     /**
-     * @Given I completed the shipping step with :shippingMethod shipping method
-     * @Given /^the (?:visitor|customer) has proceeded ("[^"]+" shipping method)$/
-     * @Given I chose :shippingMethod shipping method
-     * @When I proceed with :shippingMethod shipping method
-     * @When I select :shippingMethod shipping method
-     * @When /^the (?:visitor|customer) proceed with ("[^"]+" shipping method)$/
-     * @When /^the visitor try to proceed with ("[^"]+" shipping method) in the customer cart$/
-     * @When I try to change shipping method to :shippingMethod
-     * @When I proceed with selecting :shippingMethod shipping method
-     * @When I change shipping method to :shippingMethod
-     * @When I have proceeded selecting :shippingMethod shipping method
-     */
-    public function iProceededWithShippingMethod(ShippingMethodInterface $shippingMethod): void
-    {
-        $this->selectShippingMethod($shippingMethod);
-    }
-
-    /**
-     * @When I try to select :shippingMethodCode shipping method
-     */
-    public function iTryToSelectShippingMethod(string $shippingMethodCode): void
-    {
-        $request = $this->requestFactory->customItemAction(
-            'shop',
-            Resources::ORDERS,
-            $this->sharedStorage->get('cart_token'),
-            HTTPRequest::METHOD_PATCH,
-            sprintf('shipments/%s', $this->getCart()['shipments'][0]['id']),
-        );
-        $request->setContent([
-            'shippingMethod' => $this->iriConverter->getIriFromResource(
-                resource: $this->shippingMethodClass,
-                context: ['uri_variables' => ['code' => $shippingMethodCode]],
-            ),
-        ]);
-
-        $this->client->executeCustomRequest($request);
-    }
-
-    /**
      * @When I try to select :paymentMethodCode payment method
      */
     public function iTryToSelectPaymentMethod(string $paymentMethodCode): void
@@ -459,20 +406,9 @@ final class CheckoutContext implements Context
      */
     public function iShouldBeNotifiedThatTheOrderShouldBeAddressedFirst(): void
     {
-        Assert::true($this->isViolationWithMessageInResponse(
+        Assert::true($this->responseChecker->isViolationWithMessageInResponse(
             $this->client->getLastResponse(),
             'Order should be addressed first.',
-        ));
-    }
-
-    /**
-     * @Then I should be informed that shipping method with code :code does not exist
-     */
-    public function iShouldBeInformedThatShippingMethodWithCodeDoesNotExist(string $code): void
-    {
-        Assert::true($this->isViolationWithMessageInResponse(
-            $this->client->getLastResponse(),
-            sprintf('The shipping method with %s code does not exist.', $code),
         ));
     }
 
@@ -550,22 +486,6 @@ final class CheckoutContext implements Context
     }
 
     /**
-     * @Given I have proceeded through checkout process with :shippingMethod shipping method
-     */
-    public function iHaveProceededThroughCheckoutProcessWithShippingMethod(ShippingMethodInterface $shippingMethod): void
-    {
-        $this->addressOrder($this->getArrayWithDefaultAddress());
-
-        $this->selectShippingMethod($shippingMethod);
-
-        /** @var PaymentMethodInterface $paymentMethod */
-        $paymentMethod = $this->paymentMethodRepository->findOneBy([]);
-        $this->iChoosePaymentMethod($paymentMethod);
-
-        $this->sharedStorage->set('shipping_method', $shippingMethod);
-    }
-
-    /**
      * @Then /^(address "[^"]+", "[^"]+", "[^"]+", "[^"]+", "[^"]+", "[^"]+") should be filled as (billing) address$/
      * @Then /^the visitor should has ("[^"]+", "[^"]+", "[^"]+", "[^"]+", "[^"]+" specified as) (billing) address$/
      */
@@ -639,7 +559,7 @@ final class CheckoutContext implements Context
 
         Assert::same($response->getStatusCode(), 422);
 
-        Assert::true($this->isViolationWithMessageInResponse(
+        Assert::true($this->responseChecker->isViolationWithMessageInResponse(
             $response,
             sprintf(
                 'Product does not fit requirements for %s shipping method. Please reselect your shipping method.',
@@ -925,20 +845,6 @@ final class CheckoutContext implements Context
     }
 
     /**
-     * @Then I should not be able to select :shippingMethod shipping method
-     */
-    public function iShouldNotBeAbleToSelectShippingMethod(ShippingMethodInterface $shippingMethod): void
-    {
-        $response = $this->selectShippingMethod($shippingMethod);
-
-        Assert::same($response->getStatusCode(), 422);
-        Assert::true($this->isViolationWithMessageInResponse($response, sprintf(
-            'The shipping method %s is not available for this order. Please reselect your shipping method.',
-            $shippingMethod->getName(),
-        )));
-    }
-
-    /**
      * @Then I should have :shippingMethod shipping method available as the first choice
      */
     public function iShouldHaveShippingMethodAvailableAsFirstChoice(ShippingMethodInterface $shippingMethod): void
@@ -1096,7 +1002,7 @@ final class CheckoutContext implements Context
      */
     public function iShouldBeInformedThatThisProductHasBeenDisabled(ProductInterface $product): void
     {
-        Assert::true($this->isViolationWithMessageInResponse(
+        Assert::true($this->responseChecker->isViolationWithMessageInResponse(
             $this->client->getLastResponse(),
             sprintf('This product %s has been disabled.', $product->getName()),
         ));
@@ -1107,7 +1013,7 @@ final class CheckoutContext implements Context
      */
     public function iShouldBeInformedThatThisProductDoesNotExist(ProductInterface $product): void
     {
-        Assert::true($this->isViolationWithMessageInResponse(
+        Assert::true($this->responseChecker->isViolationWithMessageInResponse(
             $this->client->getLastResponse(),
             sprintf('The product %s does not exist.', $product->getName()),
         ));
@@ -1118,7 +1024,7 @@ final class CheckoutContext implements Context
      */
     public function iShouldBeInformedThatProductVariantDoesNotExist(ProductVariantInterface $productVariant): void
     {
-        Assert::true($this->isViolationWithMessageInResponse(
+        Assert::true($this->responseChecker->isViolationWithMessageInResponse(
             $this->client->getLastResponse(),
             sprintf('The product variant %s does not exist.', $productVariant->getCode()),
         ));
@@ -1129,7 +1035,7 @@ final class CheckoutContext implements Context
      */
     public function iShouldBeInformedThatProductVariantWithCodeDoesNotExist(string $code): void
     {
-        Assert::true($this->isViolationWithMessageInResponse(
+        Assert::true($this->responseChecker->isViolationWithMessageInResponse(
             $this->client->getLastResponse(),
             sprintf('The product variant %s does not exist.', $code),
         ));
@@ -1171,7 +1077,7 @@ final class CheckoutContext implements Context
 
         Assert::same($response->getStatusCode(), 422);
 
-        Assert::true($this->isViolationWithMessageInResponse(
+        Assert::true($this->responseChecker->isViolationWithMessageInResponse(
             $response,
             sprintf(
                 'This payment method %s has been disabled. Please reselect your payment method.',
@@ -1349,22 +1255,6 @@ final class CheckoutContext implements Context
             'Please select proper province.',
             sprintf('%s.%s', $addressType, 'provinceCode'),
         ));
-    }
-
-    private function isViolationWithMessageInResponse(Response $response, string $message, ?string $property = null): bool
-    {
-        $violations = $this->responseChecker->getResponseContent($response)['violations'];
-        foreach ($violations as $violation) {
-            if ($violation['message'] === $message && $property === null) {
-                return true;
-            }
-
-            if ($violation['message'] === $message && $property !== null && $violation['propertyPath'] === $property) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private function addressOrderWithCountryAndEmail(CountryInterface $country, ?string $email = null): void
@@ -1668,20 +1558,6 @@ final class CheckoutContext implements Context
             'complete',
         );
         $request->setContent(['notes' => $notes]);
-
-        return $this->client->executeCustomRequest($request);
-    }
-
-    private function selectShippingMethod(ShippingMethodInterface $shippingMethod): Response
-    {
-        $request = $this->requestFactory->customItemAction(
-            'shop',
-            Resources::ORDERS,
-            $this->sharedStorage->get('cart_token'),
-            HTTPRequest::METHOD_PATCH,
-            sprintf('shipments/%s', $this->getCart()['shipments'][0]['id']),
-        );
-        $request->setContent(['shippingMethod' => $this->iriConverter->getIriFromResource($shippingMethod)]);
 
         return $this->client->executeCustomRequest($request);
     }

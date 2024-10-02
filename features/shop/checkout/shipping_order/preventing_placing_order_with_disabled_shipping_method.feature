@@ -22,6 +22,7 @@ Feature: Preventing placing an order with a disabled shipping method
     @api @ui @javascript
     Scenario: Being prevented from placing an order with a shipping method that's has been disabled for the customer's country after completing the shipping method choice step
         Given I added product "Ubi T-Shirt" to the cart
+        And I addressed the cart
         And I have proceeded through checkout process with "Raven Post" shipping method
         But this shipping method has been disabled for "US Web Store" channel
         When I try to confirm my order

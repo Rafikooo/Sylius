@@ -16,6 +16,6 @@ Feature: Accessing order right after completing checkout
     Scenario: Being able to access my order right after completing checkout
         Given I added product "PHP T-Shirt" to the cart
         And I specified the billing address as "Ankh Morpork", "Frost Alley", "90210", "United States" for "Jon Snow"
-        And I proceeded with "Free" shipping method and "Cash on delivery" payment
+        And I have proceeded with "Free" shipping method and "Cash on delivery" payment
         When I confirm my order
         Then I should be able to access this order's details

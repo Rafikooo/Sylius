@@ -58,7 +58,7 @@ final readonly class ShopSecurityContext implements Context
      */
     public function iAmLoggedInCustomer(?string $fullName = null): void
     {
-        $userData = ['email' => 'sylius@example.com', 'password' => 'sylius', 'enabled' => true];
+        $userData = ['email' => 'shop@example.com', 'password' => 'sylius', 'enabled' => true];
 
         if ($fullName !== null) {
             $names = explode(' ', $fullName);
