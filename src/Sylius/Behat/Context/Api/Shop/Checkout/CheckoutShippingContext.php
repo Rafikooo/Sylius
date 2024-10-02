@@ -22,6 +22,7 @@ use Sylius\Behat\Client\ResponseCheckerInterface;
 use Sylius\Behat\Service\SharedStorageInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\ShippingMethodInterface;
+use Sylius\Component\Core\Repository\ShippingMethodRepositoryInterface;
 use Webmozart\Assert\Assert;
 
 final readonly class CheckoutShippingContext implements Context
@@ -31,6 +32,7 @@ final readonly class CheckoutShippingContext implements Context
         private ResponseCheckerInterface $responseChecker,
         private SharedStorageInterface $sharedStorage,
         private IriConverterInterface $iriConverter,
+        private ShippingMethodRepositoryInterface $shippingMethodRepository,
     ) {
     }
 
@@ -50,6 +52,26 @@ final readonly class CheckoutShippingContext implements Context
                 $content['shipments'][0]['id'],
             ),
             body: ['shippingMethod' => '/api/v2/shop/shipping-methods/NON_EXISTING'],
+        );
+    }
+
+    #[When('I complete the shipping step with first shipping method')]
+    public function iCompleteTheShippingStepWithFirstShippingMethod(): void
+    {
+        /** @var ShippingMethodInterface $shippingMethod */
+        $shippingMethod = $this->shippingMethodRepository->findOneBy([]);
+
+        $this->client->requestGet(sprintf('orders/%s', $this->sharedStorage->get('cart_token')));
+
+        $content = $this->responseChecker->getResponseContent($this->client->getLastResponse());
+
+        $this->client->requestPatch(
+            uri: sprintf(
+                'orders/%s/shipments/%s',
+                $this->sharedStorage->get('cart_token'),
+                $content['shipments'][0]['id'],
+            ),
+            body: ['shippingMethod' => $this->iriConverter->getIriFromResource($shippingMethod)],
         );
     }
 

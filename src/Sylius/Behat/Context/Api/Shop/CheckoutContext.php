@@ -425,17 +425,6 @@ final class CheckoutContext implements Context
     }
 
     /**
-     * @When I complete the shipping step with first shipping method
-     */
-    public function iCompleteTheShippingStepWithFirstShippingMethod(): void
-    {
-        /** @var ShippingMethodInterface $shippingMethod */
-        $shippingMethod = $this->shippingMethodRepository->findOneBy([]);
-
-        $this->iProceededWithShippingMethod($shippingMethod);
-    }
-
-    /**
      * @Given I completed the payment step with :paymentMethod payment method
      * @Given /^the (?:customer|visitor) has proceeded ("[^"]+" payment)$/
      * @When I choose :paymentMethod payment method
@@ -467,7 +456,19 @@ final class CheckoutContext implements Context
     {
         $this->addressOrder($this->getArrayWithDefaultAddress());
 
-        $this->iCompleteTheShippingStepWithFirstShippingMethod();
+        /** @var ShippingMethodInterface $shippingMethod */
+        $shippingMethod = $this->shippingMethodRepository->findOneBy([]);
+
+        $request = $this->requestFactory->customItemAction(
+            'shop',
+            Resources::ORDERS,
+            $this->sharedStorage->get('cart_token'),
+            HTTPRequest::METHOD_PATCH,
+            sprintf('shipments/%s', $this->getCart()['shipments'][0]['id']),
+        );
+        $request->setContent(['shippingMethod' => $this->iriConverter->getIriFromResource($shippingMethod)]);
+
+        $this->client->executeCustomRequest($request);
 
         /** @var PaymentMethodInterface $paymentMethod */
         $paymentMethod = $this->paymentMethodRepository->findOneBy([]);
@@ -481,7 +482,20 @@ final class CheckoutContext implements Context
     public function iHaveProceededSelectingPaymentMethod(PaymentMethodInterface $paymentMethod): void
     {
         $this->addressOrder($this->getArrayWithDefaultAddress());
-        $this->iCompleteTheShippingStepWithFirstShippingMethod();
+        /** @var ShippingMethodInterface $shippingMethod */
+        $shippingMethod = $this->shippingMethodRepository->findOneBy([]);
+
+        $request = $this->requestFactory->customItemAction(
+            'shop',
+            Resources::ORDERS,
+            $this->sharedStorage->get('cart_token'),
+            HTTPRequest::METHOD_PATCH,
+            sprintf('shipments/%s', $this->getCart()['shipments'][0]['id']),
+        );
+        $request->setContent(['shippingMethod' => $this->iriConverter->getIriFromResource($shippingMethod)]);
+
+        $this->client->executeCustomRequest($request);
+
         $this->iChoosePaymentMethod($paymentMethod);
     }
 
