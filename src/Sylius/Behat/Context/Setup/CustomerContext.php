@@ -15,6 +15,7 @@ namespace Sylius\Behat\Context\Setup;
 
 use Behat\Behat\Context\Context;
 use Doctrine\Persistence\ObjectManager;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Sylius\Behat\Service\SharedStorageInterface;
 use Sylius\Component\Addressing\Model\CountryInterface;
 use Sylius\Component\Core\Model\AddressInterface;
@@ -33,6 +34,7 @@ final class CustomerContext implements Context
         private FactoryInterface $customerFactory,
         private FactoryInterface $userFactory,
         private FactoryInterface $addressFactory,
+        private JWTTokenManagerInterface $jwtTokenManager,
     ) {
     }
 
@@ -46,6 +48,7 @@ final class CustomerContext implements Context
         $this->customerRepository->add($customer);
 
         $this->sharedStorage->set('customer', $customer);
+        $this->sharedStorage->set('token', $this->jwtTokenManager->create($customer));
     }
 
     /**

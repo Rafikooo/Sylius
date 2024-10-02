@@ -305,9 +305,7 @@ final readonly class CartContext implements Context
      * @Given /^I (?:add|added) (this product) to the cart$/
      * @Given /^I have (product "[^"]+") added to the cart$/
      * @Given /^I have the (product "[^"]+") added to the cart$/
-     * @Given I added product :product to the cart
      * @Given he added product :product to the cart
-     * @Given /^I (?:have|had) (product "[^"]+") in the cart$/
      * @Given /^the customer (?:added|adds) ("[^"]+" product) to the cart$/
      * @Given /^I (?:add|added) ("[^"]+" product) to the (cart)$/
      * @Given /^the visitor has (product "[^"]+") in the cart$/
@@ -384,7 +382,6 @@ final readonly class CartContext implements Context
     }
 
     /**
-     * @Given /^I have(?:| added) (\d+) (product(?:|s) "([^"]+)") (?:to|in) the cart$/
      * @When /^I add(?:|ed)(?:| again) (\d+) (products "([^"]+)") to the cart$/
      */
     public function iAddProductsToTheCart(string $quantity, ProductInterface $product): void
@@ -458,7 +455,6 @@ final readonly class CartContext implements Context
 
     /**
      * @Given I have :product with :productOption :productOptionValue in the cart
-     * @Given I have product :product with product option :productOption :productOptionValue in the cart
      * @When I add :product with :productOption :productOptionValue to the cart
      */
     public function iAddThisProductWithToTheCart(

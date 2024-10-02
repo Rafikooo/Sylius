@@ -12,10 +12,10 @@ Feature: Accessing order right after completing checkout
         And there is a user "john@example.com"
         And I am logged in as "john@example.com"
 
-    @api @ui @javascript
+    @api @ui @mink:chromedriver
     Scenario: Being able to access my order right after completing checkout
         Given I added product "PHP T-Shirt" to the cart
-        And I specified the billing address as "Ankh Morpork", "Frost Alley", "90210", "United States" for "Jon Snow"
+        And I addressed the cart
         And I have proceeded with "Free" shipping method and "Cash on delivery" payment
         When I confirm my order
         Then I should be able to access this order's details
