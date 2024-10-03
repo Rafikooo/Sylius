@@ -10,31 +10,31 @@ Feature: Allowing access only for correctly logged in users
         And the store allows paying Offline
         And the store has "UPS" shipping method with "$20.00" fee
 
-    @api @ui @javascript
+    @api @ui @mink:chromedriver
     Scenario: Accessing to the cart by the visitor
         When the visitor adds "Stark T-Shirt" product to the cart
         Then the visitor can see "Stark T-Shirt" product in the cart
 
-    @api @ui @javascript
+    @api @ui @mink:chromedriver
     Scenario: Accessing to add address to the cart by the visitor
-        Given the visitor has product "Stark T-Shirt" in the cart
-        When the visitor specify the email as "jon.snow@example.com"
+        When the visitor adds "Stark T-Shirt" product to the cart
+        And the visitor specify the email as "jon.snow@example.com"
         And the visitor specify the billing address as "Ankh Morpork", "Frost Alley", "90210", "United States" for "Jon Snow"
         And the visitor completes the addressing step
         Then the visitor should have checkout address step completed
 
-    @api @ui @javascript
+    @api @ui @mink:chromedriver
     Scenario: Accessing to add shipping method to the cart by the visitor
-        Given the visitor has product "Stark T-Shirt" in the cart
+        When the visitor adds "Stark T-Shirt" product to the cart
         And the visitor has specified the email as "jon.snow@example.com"
         And the visitor has specified address as "Ankh Morpork", "Frost Alley", "90210", "United States" for "Jon Snow"
         And the visitor has completed the addressing step
         When the visitor has proceeded with "UPS" shipping method
         Then the visitor should have checkout shipping method step completed
 
-    @api @ui @javascript
+    @api @ui @mink:chromedriver
     Scenario: Accessing to add payment method to the cart by the visitor
-        Given the visitor has product "Stark T-Shirt" in the cart
+        When the visitor adds "Stark T-Shirt" product to the cart
         And the visitor has specified the email as "jon.snow@example.com"
         And the visitor has specified address as "Ankh Morpork", "Frost Alley", "90210", "United States" for "Jon Snow"
         And the visitor has completed the addressing step
@@ -42,30 +42,30 @@ Feature: Allowing access only for correctly logged in users
         When the visitor proceed with "Offline" payment
         Then the visitor should have checkout payment step completed
 
-    @api @ui @javascript
+    @api @ui @mink:chromedriver
     Scenario: Accessing to complete the cart by the visitor
-        Given the visitor has product "Stark T-Shirt" in the cart
+        When the visitor adds "Stark T-Shirt" product to the cart
         And the visitor has specified the email as "jon.snow@example.com"
         And the visitor has specified address as "Ankh Morpork", "Frost Alley", "90210", "United States" for "Jon Snow"
         And the visitor has completed the addressing step
         And the visitor has proceeded with "UPS" shipping method
-        And the visitor has proceeded "Offline" payment
+        And the visitor has proceeded with "Offline" payment
         When the visitor confirm his order
         Then the visitor should see the thank you page
 
-    @api @ui @javascript
+    @api @ui @mink:chromedriver
     Scenario: Accessing to increase quantity of an item in the cart by the visitor
-        Given the visitor has product "Stark T-Shirt" in the cart
-        When the visitor change product "Stark T-Shirt" quantity to 2 in his cart
+        When the visitor adds "Stark T-Shirt" product to the cart
+        And the visitor change product "Stark T-Shirt" quantity to 2 in his cart
         Then the visitor should see product "Stark T-Shirt" with quantity 2 in his cart
 
-    @api @ui @javascript
+    @api @ui @mink:chromedriver
     Scenario: Accessing to the cart by the logged in customer
         Given the customer logged in
         When the customer adds "Stark T-Shirt" product to the cart
         Then the customer can see "Stark T-Shirt" product in the cart
 
-    @api @ui @javascript
+    @api @ui @mink:chromedriver
     Scenario: Accessing to add address to the cart by the customer
         Given the customer logged in
         And the customer has product "Stark T-Shirt" in the cart
@@ -73,7 +73,7 @@ Feature: Allowing access only for correctly logged in users
         And the customer completes the addressing step
         Then the customer should have checkout address step completed
 
-    @api @ui @javascript
+    @api @ui @mink:chromedriver
     Scenario: Accessing to add shipping method to the cart by the customer
         Given the customer logged in
         And the customer has product "Stark T-Shirt" in the cart
@@ -82,7 +82,7 @@ Feature: Allowing access only for correctly logged in users
         When the customer proceeds with "UPS" shipping method
         Then the customer should have checkout shipping method step completed
 
-    @api @ui @javascript
+    @api @ui @mink:chromedriver
     Scenario: Accessing to add payment method to the cart by the customer
         Given the customer logged in
         And the customer has product "Stark T-Shirt" in the cart
@@ -103,10 +103,10 @@ Feature: Allowing access only for correctly logged in users
         When the customer confirm his order
         Then the customer should see the thank you page
 
-    @api @ui @javascript
+    @api @ui @mink:chromedriver
     Scenario: Accessing to increase quantity of an item in the cart by the customer
-        Given the customer has product "Stark T-Shirt" in the cart
-        When the customer change product "Stark T-Shirt" quantity to 2 in his cart
+        When the customer adds "Stark T-Shirt" product to the cart
+        And the customer change product "Stark T-Shirt" quantity to 2 in his cart
         Then the customer should see product "Stark T-Shirt" with quantity 2 in his cart
 
     @api @no-ui
