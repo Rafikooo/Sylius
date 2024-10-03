@@ -21,8 +21,8 @@ Feature: Order shipping method integrity
     @api @ui @mink:chromedriver
     Scenario: Validate shipping method after administrator changes shipping method requirements
         When I add product "Westworld host" to the cart
-        And I have completed addressing step with email "guest@example.com" and "United States" based billing address
-        And I have proceeded order with "DHL" shipping method and "Offline" payment
+        And I complete addressing step with email "guest@example.com" and "United States" based billing address
+        And I proceed with "DHL" shipping method and "Offline" payment
         And product "Westworld host" shipping category has been changed to "Small stuff"
         And I want to complete checkout
         Then I should not be able to confirm order because products do not fit "DHL" requirements

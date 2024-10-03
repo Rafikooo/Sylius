@@ -49,6 +49,7 @@ final readonly class ShopSecurityContext implements Context
         $this->securityService->logIn($user);
 
         $this->sharedStorage->set('user', $user);
+        // Set the token in the shared storage to have access both in UI and API to resources created in the setup context
         $this->sharedStorage->set('token', $this->jwtTokenManager->create($user));
     }
 

@@ -68,6 +68,7 @@ final readonly class CheckoutAddressingContext implements Context
     }
 
     /**
+     * @Given /^they have completed addressing step with email "([^"]+)" and ("[^"]+" based billing address)$/
      * @When /^I complete addressing step with email "([^"]+)" and ("[^"]+" based billing address)$/
      * @When /^they complete addressing step with email "([^"]+)" and ("[^"]+" based billing address)$/
      */
