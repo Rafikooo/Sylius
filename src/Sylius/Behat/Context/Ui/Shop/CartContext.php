@@ -42,7 +42,8 @@ final readonly class CartContext implements Context
         private NotificationCheckerInterface $notificationChecker,
         private SessionManagerInterface $sessionManager,
         private BrowserElementInterface $browserElement,
-    ) {
+    )
+    {
     }
 
     /**
@@ -458,7 +459,8 @@ final readonly class CartContext implements Context
         ProductInterface $product,
         ProductOptionInterface $productOption,
         string $productOptionValue,
-    ): void {
+    ): void
+    {
         $this->productShowPage->open(['slug' => $product->getSlug()]);
 
         $this->productShowPage->addToCartWithOption($productOption, $productOptionValue);
@@ -541,7 +543,6 @@ final readonly class CartContext implements Context
     /**
      * @Given I use coupon with code :couponCode
      * @Given I remove coupon from my cart
-     * @Given this cart has promotion applied with coupon :couponCode
      */
     public function iUseCouponWithCode(?string $couponCode = null): void
     {
@@ -650,6 +651,6 @@ final readonly class CartContext implements Context
 
     private function getPriceFromString(string $price): int
     {
-        return (int) round((float) str_replace(['€', '£', '$'], '', $price) * 100, 2);
+        return (int)round((float)str_replace(['€', '£', '$'], '', $price) * 100, 2);
     }
 }
