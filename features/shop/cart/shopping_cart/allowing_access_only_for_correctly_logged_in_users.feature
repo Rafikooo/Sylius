@@ -29,7 +29,7 @@ Feature: Allowing access only for correctly logged in users
         And the visitor has specified the email as "jon.snow@example.com"
         And the visitor has specified address as "Ankh Morpork", "Frost Alley", "90210", "United States" for "Jon Snow"
         And the visitor has completed the addressing step
-        When the visitor proceed with "UPS" shipping method
+        When the visitor has proceeded with "UPS" shipping method
         Then the visitor should have checkout shipping method step completed
 
     @api @ui @javascript
@@ -38,7 +38,7 @@ Feature: Allowing access only for correctly logged in users
         And the visitor has specified the email as "jon.snow@example.com"
         And the visitor has specified address as "Ankh Morpork", "Frost Alley", "90210", "United States" for "Jon Snow"
         And the visitor has completed the addressing step
-        And the visitor has proceeded "UPS" shipping method
+        And the visitor has proceeded with "UPS" shipping method
         When the visitor proceed with "Offline" payment
         Then the visitor should have checkout payment step completed
 
@@ -48,7 +48,7 @@ Feature: Allowing access only for correctly logged in users
         And the visitor has specified the email as "jon.snow@example.com"
         And the visitor has specified address as "Ankh Morpork", "Frost Alley", "90210", "United States" for "Jon Snow"
         And the visitor has completed the addressing step
-        And the visitor has proceeded "UPS" shipping method
+        And the visitor has proceeded with "UPS" shipping method
         And the visitor has proceeded "Offline" payment
         When the visitor confirm his order
         Then the visitor should see the thank you page
@@ -79,7 +79,7 @@ Feature: Allowing access only for correctly logged in users
         And the customer has product "Stark T-Shirt" in the cart
         And the customer has specified address as "Ankh Morpork", "Frost Alley", "90210", "United States" for "Jon Snow"
         And the customer has completed the addressing step
-        When the customer proceed with "UPS" shipping method
+        When the customer proceeds with "UPS" shipping method
         Then the customer should have checkout shipping method step completed
 
     @api @ui @javascript
@@ -88,18 +88,18 @@ Feature: Allowing access only for correctly logged in users
         And the customer has product "Stark T-Shirt" in the cart
         And the customer has specified address as "Ankh Morpork", "Frost Alley", "90210", "United States" for "Jon Snow"
         And the customer has completed the addressing step
-        And the customer has proceeded "UPS" shipping method
+        And the customer has proceeded with "UPS" shipping method
         When the customer proceed with "Offline" payment
         Then the customer should have checkout payment step completed
 
-    @api @ui @javascript
+    @api @ui
     Scenario: Accessing to complete the cart by the customer
         Given the customer logged in
         And the customer has product "Stark T-Shirt" in the cart
         And the customer has specified address as "Ankh Morpork", "Frost Alley", "90210", "United States" for "Jon Snow"
         And the customer has completed the addressing step
-        And the customer has proceeded "UPS" shipping method
-        And the customer has proceeded "Offline" payment
+        And the customer has proceeded with "UPS" shipping method
+        And the customer has proceeded with "Offline" payment
         When the customer confirm his order
         Then the customer should see the thank you page
 
@@ -150,7 +150,7 @@ Feature: Allowing access only for correctly logged in users
         And the customer has product "Stark T-Shirt" in the cart
         And the customer has specified address as "Ankh Morpork", "Frost Alley", "90210", "United States" for "Jon Snow"
         And the customer has completed the addressing step
-        And the customer has proceeded "UPS" shipping method
+        And the customer has proceeded with "UPS" shipping method
         And the customer logged out
         Then the visitor has no access to proceed with "Offline" payment in the customer cart
 
@@ -160,8 +160,8 @@ Feature: Allowing access only for correctly logged in users
         And the customer has product "Stark T-Shirt" in the cart
         And the customer has specified address as "Ankh Morpork", "Frost Alley", "90210", "United States" for "Jon Snow"
         And the customer has completed the addressing step
-        And the customer has proceeded "UPS" shipping method
-        And the customer has proceeded "Offline" payment
+        And the customer has proceeded with "UPS" shipping method
+        And the customer has proceeded with "Offline" payment
         And the customer logged out
         Then the visitor has no access to confirm the customer order
 

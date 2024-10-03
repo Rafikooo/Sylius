@@ -426,7 +426,7 @@ final class CheckoutContext implements Context
 
     /**
      * @Given I completed the payment step with :paymentMethod payment method
-     * @Given /^the (?:customer|visitor) has proceeded ("[^"]+" payment)$/
+     * @Given /^the (?:customer|visitor) has proceeded with ("[^"]+" payment)$/
      * @When I choose :paymentMethod payment method
      * @When I select :paymentMethod payment method
      * @When /^the (?:customer|visitor) proceed with ("[^"]+" payment)$/
