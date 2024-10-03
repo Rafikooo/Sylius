@@ -79,6 +79,7 @@ final readonly class CheckoutShippingContext implements Context
     #[When('I chose :shippingMethod shipping method')]
     #[When('I proceed with :shippingMethod shipping method')]
     #[When('I select :shippingMethod shipping method')]
+    #[When('I try to change shipping method to :shippingMethod')]
     #[When('I try to select :shippingMethod shipping method')]
     #[When('the customer has proceeded with :shippingMethod shipping method')]
     #[When('the customer proceeds with :shippingMethod shipping method')]
