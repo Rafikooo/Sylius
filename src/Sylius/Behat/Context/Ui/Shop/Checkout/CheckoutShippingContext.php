@@ -36,7 +36,6 @@ final readonly class CheckoutShippingContext implements Context
      * @Given the visitor proceed with :shippingMethodName shipping method
      * @Given the customer proceed with :shippingMethodName shipping method
      * @Given I chose :shippingMethodName shipping method
-     * @Given I completed the shipping step with :shippingMethodName shipping method
      * @Given I have proceeded with :shippingMethodName shipping method
      * @Given I have proceeded selecting :shippingMethodName shipping method
      * @When I proceed with :shippingMethodName shipping method

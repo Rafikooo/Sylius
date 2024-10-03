@@ -109,7 +109,13 @@ final readonly class CheckoutContext implements Context
     #[Given('I completed the shipping step with :shippingMethod shipping method')]
     public function iTryToSelectShippingMethod(ShippingMethodInterface $shippingMethod): void
     {
-        $this->chooseShippingMethod($this->sharedStorage->get('cart'), $shippingMethod);
+        $cartToken = $this->sharedStorage->get('cart_token');
+
+        /** @var OrderInterface|null $cart */
+        $cart = $this->orderRepository->findCartByTokenValue($cartToken);
+        Assert::notNull($cart);
+
+        $this->chooseShippingMethod($cart, $shippingMethod);
     }
 
     #[Given('I have proceeded with :shippingMethod shipping method and :paymentMethod payment method')]
