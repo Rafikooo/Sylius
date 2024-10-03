@@ -65,4 +65,19 @@ final readonly class AddressContext implements Context
         );
         $this->commandBus->dispatch($command);
     }
+
+    /**
+     * @Given /^I have completed addressing step with email "([^"]+)" and ("[^"]+" based billing address)$/
+     */
+    public function iCompleteAddressingStepWithEmail(string $email, AddressInterface $address): void
+    {
+        $cartToken = $this->sharedStorage->get('cart_token');
+
+        $command = new UpdateCart(
+            orderTokenValue: $cartToken,
+            email: $email,
+            billingAddress: $address,
+        );
+        $this->commandBus->dispatch($command);
+    }
 }

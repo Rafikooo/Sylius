@@ -67,9 +67,6 @@ final readonly class CheckoutContext implements Context
     }
 
     /**
-     * @Given I have proceeded order with :shippingMethodName shipping method and :paymentMethodName payment
-     * @Given I have proceeded with :shippingMethodName shipping method and :paymentMethodName payment
-     * @Given I have proceeded with :shippingMethodName shipping method and :paymentMethodName payment method
      * @When I proceed with :shippingMethodName shipping method and :paymentMethodName payment
      */
     public function iProceedOrderWithShippingMethodAndPayment(string $shippingMethodName, string $paymentMethodName): void
@@ -86,8 +83,6 @@ final readonly class CheckoutContext implements Context
     }
 
     /**
-     * @Given I have proceeded through checkout process in the :localeCode locale with email :email
-     * @Given I have proceeded through checkout process
      * @When I proceed through checkout process
      * @When I proceeded through checkout process
      * @When I proceed through checkout process in the :localeCode locale
@@ -101,7 +96,6 @@ final readonly class CheckoutContext implements Context
     }
 
     /**
-     * @Given I have proceeded through checkout process with :shippingMethod shipping method
      * @When I proceed through checkout with :shippingMethod shipping method
      */
     public function iHaveProceededThroughCheckoutProcessWithShippingMethod(ShippingMethodInterface $shippingMethod): void

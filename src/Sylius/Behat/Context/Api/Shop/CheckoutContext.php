@@ -95,6 +95,38 @@ final class CheckoutContext implements Context
     }
 
     /**
+     * @Given I have proceeded order with :shippingMethod shipping method and :paymentMethod payment
+     * @Given I proceeded with :shippingMethod shipping method and :paymentMethod payment
+     * @When I proceed with :shippingMethod shipping method and :paymentMethod payment
+     */
+    public function iProceedOrderWithShippingMethodAndPayment(
+        ShippingMethodInterface $shippingMethod,
+        PaymentMethodInterface $paymentMethod,
+    ): void {
+        $request = $this->requestFactory->customItemAction(
+            'shop',
+            Resources::ORDERS,
+            $this->sharedStorage->get('cart_token'),
+            HTTPRequest::METHOD_PATCH,
+            sprintf('shipments/%s', $this->getCart()['shipments'][0]['id']),
+        );
+        $request->setContent(['shippingMethod' => $this->iriConverter->getIriFromResource($shippingMethod)]);
+
+        $this->client->executeCustomRequest($request);
+
+        $request = $this->requestFactory->customItemAction(
+            'shop',
+            Resources::ORDERS,
+            $this->sharedStorage->get('cart_token'),
+            HTTPRequest::METHOD_PATCH,
+            \sprintf('payments/%s', $this->getCart()['payments'][0]['id']),
+        );
+        $request->setContent(['paymentMethod' => $this->iriConverter->getIriFromResource($paymentMethod)]);
+
+        $this->client->executeCustomRequest($request);
+    }
+
+    /**
      * @Given I am at the checkout addressing step
      * @When I complete the payment step
      * @When I complete the shipping step
