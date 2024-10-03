@@ -19,7 +19,7 @@ Feature: Receiving confirmation email after finalizing checkout
         And I confirm my order
         Then an email with the summary of order placed by "john@example.com" should be sent to him
 
-    @api @ui @mink:chromedriver @email #TODO: To to je hit na sali
+    @api @ui @mink:chromedriver @email
     Scenario: Receiving confirmation email after finalizing checkout in different locale than the default one
         When I add product "Sig Sauer P226" to the cart
         And I proceed through checkout process in the "Polish (Poland)" locale with email "john@example.com"

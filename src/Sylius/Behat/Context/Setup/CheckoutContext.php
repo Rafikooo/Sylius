@@ -65,6 +65,7 @@ final readonly class CheckoutContext implements Context
     }
 
     #[Given('I have proceeded through checkout process in the :localeCode locale with email :email')]
+    #[Given('I proceed through checkout process in the :localeCode locale with email :email')]
     public function iHaveProceededThroughCheckoutProcessInTheLocaleWithEmail(string $localeCode, string $email): void
     {
         $cartToken = $this->sharedStorage->get('cart_token');
