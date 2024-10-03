@@ -107,6 +107,7 @@ final readonly class CheckoutContext implements Context
     }
 
     #[Given('I completed the shipping step with :shippingMethod shipping method')]
+    #[Given('I have proceeded selecting :shippingMethod shipping method')]
     public function iTryToSelectShippingMethod(ShippingMethodInterface $shippingMethod): void
     {
         $cartToken = $this->sharedStorage->get('cart_token');

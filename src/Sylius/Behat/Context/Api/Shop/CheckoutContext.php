@@ -95,7 +95,6 @@ final class CheckoutContext implements Context
     }
 
     /**
-     * @Given I have proceeded order with :shippingMethod shipping method and :paymentMethod payment
      * @Given I proceeded with :shippingMethod shipping method and :paymentMethod payment
      * @When I proceed with :shippingMethod shipping method and :paymentMethod payment
      */
@@ -275,7 +274,6 @@ final class CheckoutContext implements Context
     }
 
     /**
-     * @Given /^I have completed addressing step with email "([^"]+)" and ("[^"]+" based billing address)$/
      * @When /^I complete addressing step with email "([^"]+)" and ("[^"]+" based billing address)$/
      */
     public function iCompleteAddressingStepWithEmail(string $email, AddressInterface $address): void
