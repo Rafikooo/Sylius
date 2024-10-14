@@ -1,0 +1,4 @@
+when@dev:
+    controllers:
+        resource: ../../tests/App/src/Controller/
+        type: attribute
