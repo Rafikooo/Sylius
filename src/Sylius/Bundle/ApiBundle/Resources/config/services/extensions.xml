@@ -128,15 +128,6 @@
         </service>
 
         <service
-            id="sylius_api.doctrine.orm.query_extension.common.filter_eager_loading"
-            class="Sylius\Bundle\ApiBundle\Doctrine\ORM\QueryExtension\Common\RestrictingFilterEagerLoadingExtension"
-            decorates="api_platform.doctrine.orm.query_extension.filter_eager_loading"
-        >
-            <argument type="service" id="sylius_api.doctrine.orm.query_extension.common.filter_eager_loading.inner" />
-            <argument>%sylius_api.filter_eager_loading_extension.restricted_resources%</argument>
-        </service>
-
-        <service
             id="sylius_api.doctrine.orm.query_extension.shop.order.shop_user_based"
             class="Sylius\Bundle\ApiBundle\Doctrine\ORM\QueryExtension\Shop\Order\ShopUserBasedExtension"
         >
