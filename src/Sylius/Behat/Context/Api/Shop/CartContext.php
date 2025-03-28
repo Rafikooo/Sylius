@@ -23,6 +23,8 @@ use Sylius\Behat\Service\SharedStorageInterface;
 use Sylius\Behat\Service\SprintfResponseEscaper;
 use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Core\Model\ProductVariantInterface;
+use Sylius\Component\Core\OrderCheckoutStates;
+use Sylius\Component\Core\Repository\OrderRepositoryInterface;
 use Sylius\Component\Locale\Model\LocaleInterface;
 use Sylius\Component\Product\Resolver\ProductVariantResolverInterface;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
@@ -40,6 +42,7 @@ final class CartContext implements Context
         private IriConverterInterface $iriConverter,
         private RequestFactoryInterface $requestFactory,
         private string $apiUrlPrefix,
+        private OrderRepositoryInterface $orderRepository,
     ) {
     }
 
@@ -50,7 +53,7 @@ final class CartContext implements Context
     {
         $this->shopClient->delete(Resources::ORDERS, $tokenValue);
 
-        $this->sharedStorage->set('cart_token', null);
+        $this->sharedStorage->remove('cart_token');
     }
 
     /**
@@ -89,19 +92,6 @@ final class CartContext implements Context
     }
 
     /**
-     * @When /^I add (products "([^"]+)" and "([^"]+)") to the cart$/
-     * @When /^I add (products "([^"]+)", "([^"]+)" and "([^"]+)") to the cart$/
-     */
-    public function iAddMultipleProductsToTheCart(array $products): void
-    {
-        $tokenValue = $this->pickupCart();
-
-        foreach ($products as $product) {
-            $this->putProductToCart($product, $tokenValue);
-        }
-    }
-
-    /**
      * @When /^I add (\d+) of (them) to (?:the|my) (cart)$/
      * @When /^I add(?:| again) (\d+) (products "[^"]+") to the (cart)$/
      * @When /^I try to add (\d+) (products "[^"]+") to the (cart)$/
@@ -116,7 +106,6 @@ final class CartContext implements Context
     /**
      * @When /^I add ("[^"]+" variant) of (this product) to the (cart)$/
      * @When /^I add ("[^"]+" variant) of (product "[^"]+") to the (cart)$/
-     * @When /^I have ("[^"]+" variant) of (product "[^"]+") in the (cart)$/
      */
     public function iAddVariantOfThisProductToTheCart(
         ProductVariantInterface $productVariant,
@@ -245,6 +234,7 @@ final class CartContext implements Context
     /**
      * @When /^I check details of my (cart)$/
      * @When /^I check the details of my (cart)$/
+     * @When /^the customer checks details of their (cart)$/
      */
     public function iCheckDetailsOfMyCart(string $tokenValue): void
     {
@@ -378,16 +368,15 @@ final class CartContext implements Context
     }
 
     /**
-     * @Then /^my (cart) should be empty$/
-     * @Then /^(cart) should be empty with no value$/
+     * @Then my cart should be empty
      */
-    public function myCartShouldBeEmpty(string $tokenValue): void
+    public function myCartShouldBeEmpty(): void
     {
-        $response = $this->shopClient->show(Resources::ORDERS, $tokenValue);
+        $tokenValue = $this->sharedStorage->get('cart_token');
 
-        Assert::true(
-            $this->responseChecker->isShowSuccessful($response),
-            SprintfResponseEscaper::provideMessageWithEscapedResponseContent('Cart has not been created.', $response),
+        Assert::isEmpty(
+            $this->responseChecker->getValue($this->shopClient->show(Resources::ORDERS, $tokenValue), 'items'),
+            'Cart is not empty.',
         );
     }
 
@@ -844,6 +833,7 @@ final class CartContext implements Context
             'created_as_guest',
             $this->responseChecker->getValue($this->shopClient->getLastResponse(), 'customer') === null,
         );
+        $this->sharedStorage->set('order', $this->orderRepository->findOneBy(['tokenValue' => $tokenValue]));
 
         return $tokenValue;
     }

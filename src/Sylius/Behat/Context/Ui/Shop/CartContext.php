@@ -42,13 +42,15 @@ final readonly class CartContext implements Context
         private NotificationCheckerInterface $notificationChecker,
         private SessionManagerInterface $sessionManager,
         private BrowserElementInterface $browserElement,
-    ) {
+    )
+    {
     }
 
     /**
      * @Given I am on the summary of my cart page
      * @When /^I see the summary of my (?:|previous )cart$/
      * @When I check details of my cart
+     * @When the customer checks details of their cart
      * @When I check items in my cart
      */
     public function iCheckDetailsOfMyCart(): void
@@ -116,10 +118,6 @@ final readonly class CartContext implements Context
      */
     public function iChangeQuantityTo(string $productName, string $quantity): void
     {
-        if (!$this->summaryPage->isOpen()) {
-            $this->summaryPage->open();
-        }
-
         $this->summaryPage->changeQuantity($productName, $quantity);
     }
 
@@ -300,17 +298,15 @@ final readonly class CartContext implements Context
         Assert::false($this->summaryPage->isItemDiscounted($product->getName()));
     }
 
+//     * @Given /^I (?:add|added) ("[^"]+" product) to the (cart)$/ // :TODO - applying_correct_taxes_for_items_with_the_same_tax_rate.feature:18
     /**
      * @Given /^an anonymous user added (product "([^"]+)") to the cart$/
      * @Given /^I (?:add|added) (this product) to the cart$/
      * @Given /^I have (product "[^"]+") added to the cart$/
-     * @Given I added product :product to the cart
+     * @Given /^I have the (product "[^"]+") added to the cart$/
      * @Given he added product :product to the cart
-     * @Given /^I (?:have|had) (product "[^"]+") in the cart$/
-     * @Given /^the customer (?:added|adds) ("[^"]+" product) to the cart$/
-     * @Given /^I (?:add|added) ("[^"]+" product) to the (cart)$/
-     * @Given /^the visitor has (product "[^"]+") in the cart$/
-     * @Given /^the customer has (product "[^"]+") in the cart$/
+     * @When /^the customer adds ("[^"]+" product) to the cart$/
+     * @When /^I add ("[^"]+" product) to the (cart)$/
      * @When /^the visitor adds ("[^"]+" product) to the cart$/
      * @When I add product :product to the cart
      * @When I add the product :product to the cart
@@ -322,19 +318,6 @@ final readonly class CartContext implements Context
         $this->productShowPage->addToCart();
 
         $this->sharedStorage->set('product', $product);
-    }
-
-    /**
-     * @When /^I add (products "([^"]+)" and "([^"]+)") to the cart$/
-     * @When /^I add (products "([^"]+)", "([^"]+)" and "([^"]+)") to the cart$/
-     *
-     * @param ProductInterface[] $products
-     */
-    public function iAddMultipleProductsToTheCart(array $products): void
-    {
-        foreach ($products as $product) {
-            $this->iAddProductToTheCart($product);
-        }
     }
 
     /**
@@ -352,8 +335,6 @@ final readonly class CartContext implements Context
     }
 
     /**
-     * @Given I have :variantName variant of product :product in the cart
-     * @Given /^I have "([^"]+)" variant of (this product) in the cart$/
      * @When I add :variantName variant of product :product to the cart
      * @When /^I add "([^"]+)" variant of (this product) to the cart$/
      */
@@ -383,8 +364,7 @@ final readonly class CartContext implements Context
     }
 
     /**
-     * @Given /^I have(?:| added) (\d+) (product(?:|s) "([^"]+)") (?:to|in) the cart$/
-     * @When /^I add(?:|ed)(?:| again) (\d+) (products "([^"]+)") to the cart$/
+     * @When /^I add(?:| again) (\d+) (products "([^"]+)") to the cart$/
      */
     public function iAddProductsToTheCart(string $quantity, ProductInterface $product): void
     {
@@ -457,7 +437,6 @@ final readonly class CartContext implements Context
 
     /**
      * @Given I have :product with :productOption :productOptionValue in the cart
-     * @Given I have product :product with product option :productOption :productOptionValue in the cart
      * @When I add :product with :productOption :productOptionValue to the cart
      */
     public function iAddThisProductWithToTheCart(
@@ -554,7 +533,6 @@ final readonly class CartContext implements Context
 
     /**
      * @Given I use coupon with code :couponCode
-     * @Given this cart has promotion applied with coupon :couponCode
      */
     public function iUseCouponWithCode(string $couponCode): void
     {
@@ -663,6 +641,6 @@ final readonly class CartContext implements Context
 
     private function getPriceFromString(string $price): int
     {
-        return (int) round((float) str_replace(['€', '£', '$'], '', $price) * 100, 2);
+        return (int)round((float)str_replace(['€', '£', '$'], '', $price) * 100, 2);
     }
 }
