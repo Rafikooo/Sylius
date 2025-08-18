@@ -65,7 +65,9 @@ class SyliusAdmin {
             .enableSassLoader((options) => {
                 // eslint-disable-next-line no-param-reassign
                 options.additionalData = `$rootDir: '${rootDir}';`;
-            });
+            })
+            .enableIntegrityHashes(Encore.isProduction())
+        ;
     }
 }
 
