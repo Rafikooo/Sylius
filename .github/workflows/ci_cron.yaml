@@ -1,0 +1,421 @@
+name: CI (Cron)
+
+on:
+    schedule:
+        - cron: "0 2 * * *" # daily
+    workflow_dispatch: ~
+
+concurrency:
+    group: ci-${{ github.workflow }}-${{ github.ref }}-cron
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+
+jobs:
+    static-checks-1_14:
+        name: "[1.14] Static checks"
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.2", "8.3", "8.4"]
+                symfony: ["^6.4", "~7.2.0", "~7.3.0"]
+        uses: ./.github/workflows/_ci_static-checks.yaml
+        with:
+            branch: "1.14"
+            target_branch: "1.14"
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+
+    e2e-mariadb-1_14:
+        name: "[1.14] E2E (MariaDB)"
+        needs: static-checks-1_14
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.2", "8.3", "8.4"]
+                symfony: ["^6.4", "~7.2.0", "~7.3.0"]
+                include:
+                    - php: "8.3"
+                      symfony: "~7.3.0"
+                      state_machine_adapter: "winzou_state_machine"
+        uses: ./.github/workflows/_ci_e2e.yaml
+        with:
+            branch: "1.14"
+            db: mariadb
+            db_version: "11.4.7"
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+            state_machine_adapter: ${{ matrix.state_machine_adapter || 'symfony_workflow' }}
+
+    e2e-mysql-1_14:
+        name: "[1.14] E2E (MySQL)"
+        needs: static-checks-1_14
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.2", "8.3", "8.4"]
+                symfony: ["^6.4", "~7.2.0", "~7.3.0"]
+                mysql: ["8.0", "8.4"]
+        uses: ./.github/workflows/_ci_e2e.yaml
+        with:
+            branch: "1.14"
+            db: mysql
+            db_version: ${{ matrix.mysql }}
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+            twig: "^3.3"
+
+    e2e-pgsql-1_14:
+        name: "[1.14] E2E (PostgreSQL)"
+        needs: static-checks-1_14
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.2", "8.3", "8.4"]
+                symfony: ["^6.4", "~7.2.0", "~7.3.0"]
+                postgres: ["15.13", "16.9", "17.5"]
+        uses: ./.github/workflows/_ci_e2e.yaml
+        with:
+            branch: "1.14"
+            db: postgresql
+            db_version: ${{ matrix.postgres }}
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+
+    frontend-1_14:
+        name: "[1.14] Frontend"
+        needs: static-checks-1_14
+        strategy:
+            fail-fast: false
+            matrix:
+                node: ["22.x", "24.x"]
+        uses: ./.github/workflows/_ci_frontend.yaml
+        with:
+            branch: "1.14"
+            node: ${{ matrix.node }}
+
+    packages-1_14:
+        name: "[1.14] Packages"
+        needs: static-checks-1_14
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.2", "8.3", "8.4"]
+                symfony: ["^6.4", "~7.2.0", "~7.3.0"]
+        uses: ./.github/workflows/_ci_packages.yaml
+        with:
+            branch: "1.14"
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+
+    # ---- Branch 2.0 ----
+    static-checks-2_0:
+        name: "[2.0] Static checks"
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.2", "8.3", "8.4"]
+                symfony: ["^6.4", "~7.2.0", "~7.3.0"]
+        uses: ./.github/workflows/_ci_static-checks.yaml
+        with:
+            branch: "2.0"
+            target_branch: "2.0"
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+
+    e2e-mariadb-2_0:
+        name: "[2.0] E2E (MariaDB)"
+        needs: static-checks-2_0
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.2", "8.3", "8.4"]
+                symfony: ["^6.4", "~7.2.0", "~7.3.0"]
+                include:
+                    - php: "8.3"
+                      symfony: "~7.3.0"
+                      state_machine_adapter: "winzou_state_machine"
+        uses: ./.github/workflows/_ci_e2e.yaml
+        with:
+            branch: "2.0"
+            db: mariadb
+            db_version: "11.4.7"
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+            state_machine_adapter: ${{ matrix.state_machine_adapter || 'symfony_workflow' }}
+
+    e2e-mysql-2_0:
+        name: "[2.0] E2E (MySQL)"
+        needs: static-checks-2_0
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.2", "8.3", "8.4"]
+                symfony: ["^6.4", "~7.2.0", "~7.3.0"]
+                mysql: ["8.0", "8.4"]
+        uses: ./.github/workflows/_ci_e2e.yaml
+        with:
+            branch: "2.0"
+            db: mysql
+            db_version: ${{ matrix.mysql }}
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+            twig: "^3.3"
+
+    e2e-pgsql-2_0:
+        name: "[2.0] E2E (PostgreSQL)"
+        needs: static-checks-2_0
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.2", "8.3", "8.4"]
+                symfony: ["^6.4", "~7.2.0", "~7.3.0"]
+                postgres: ["15.13", "16.9", "17.5"]
+        uses: ./.github/workflows/_ci_e2e.yaml
+        with:
+            branch: "2.0"
+            db: postgresql
+            db_version: ${{ matrix.postgres }}
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+
+    frontend-2_0:
+        name: "[2.0] Frontend"
+        needs: static-checks-2_0
+        strategy:
+            fail-fast: false
+            matrix:
+                node: ["22.x", "24.x"]
+        uses: ./.github/workflows/_ci_frontend.yaml
+        with:
+            branch: "2.0"
+            node: ${{ matrix.node }}
+
+    packages-2_0:
+        name: "[2.0] Packages"
+        needs: static-checks-2_0
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.2", "8.3", "8.4"]
+                symfony: ["^6.4", "~7.2.0", "~7.3.0"]
+        uses: ./.github/workflows/_ci_packages.yaml
+        with:
+            branch: "2.0"
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+
+    # ---- Branch 2.1 ----
+    static-checks-2_1:
+        name: "[2.1] Static checks"
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.2", "8.3", "8.4"]
+                symfony: ["^6.4", "~7.2.0", "~7.3.0"]
+        uses: ./.github/workflows/_ci_static-checks.yaml
+        with:
+            branch: "2.1"
+            target_branch: "2.1"
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+
+    e2e-mariadb-2_1:
+        name: "[2.1] E2E (MariaDB)"
+        needs: static-checks-2_1
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.2", "8.3", "8.4"]
+                symfony: ["^6.4", "~7.2.0", "~7.3.0"]
+                include:
+                    - php: "8.3"
+                      symfony: "~7.3.0"
+                      state_machine_adapter: "winzou_state_machine"
+        uses: ./.github/workflows/_ci_e2e.yaml
+        with:
+            branch: "2.1"
+            db: mariadb
+            db_version: "11.4.7"
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+            state_machine_adapter: ${{ matrix.state_machine_adapter || 'symfony_workflow' }}
+
+    e2e-mysql-2_1:
+        name: "[2.1] E2E (MySQL)"
+        needs: static-checks-2_1
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.2", "8.3", "8.4"]
+                symfony: ["^6.4", "~7.2.0", "~7.3.0"]
+                mysql: ["8.0", "8.4"]
+        uses: ./.github/workflows/_ci_e2e.yaml
+        with:
+            branch: "2.1"
+            db: mysql
+            db_version: ${{ matrix.mysql }}
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+            twig: "^3.3"
+
+    e2e-pgsql-2_1:
+        name: "[2.1] E2E (PostgreSQL)"
+        needs: static-checks-2_1
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.2", "8.3", "8.4"]
+                symfony: ["^6.4", "~7.2.0", "~7.3.0"]
+                postgres: ["15.13", "16.9", "17.5"]
+        uses: ./.github/workflows/_ci_e2e.yaml
+        with:
+            branch: "2.1"
+            db: postgresql
+            db_version: ${{ matrix.postgres }}
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+
+    frontend-2_1:
+        name: "[2.1] Frontend"
+        needs: static-checks-2_1
+        strategy:
+            fail-fast: false
+            matrix:
+                node: ["22.x", "24.x"]
+        uses: ./.github/workflows/_ci_frontend.yaml
+        with:
+            branch: "2.1"
+            node: ${{ matrix.node }}
+
+    packages-2_1:
+        name: "[2.1] Packages"
+        needs: static-checks-2_1
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.2", "8.3", "8.4"]
+                symfony: ["^6.4", "~7.2.0", "~7.3.0"]
+        uses: ./.github/workflows/_ci_packages.yaml
+        with:
+            branch: "2.1"
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+
+    # ---- Branch 2.2 ----
+    static-checks-2_2:
+        name: "[2.2] Static checks"
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.2", "8.3", "8.4"]
+                symfony: ["^6.4", "~7.2.0", "~7.3.0"]
+        uses: ./.github/workflows/_ci_static-checks.yaml
+        with:
+            branch: "2.2"
+            target_branch: "2.2"
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+
+    e2e-mariadb-2_2:
+        name: "[2.2] E2E (MariaDB)"
+        needs: static-checks-2_2
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.2", "8.3", "8.4"]
+                symfony: ["^6.4", "~7.2.0", "~7.3.0"]
+                include:
+                    - php: "8.3"
+                      symfony: "~7.3.0"
+                      state_machine_adapter: "winzou_state_machine"
+        uses: ./.github/workflows/_ci_e2e.yaml
+        with:
+            branch: "2.2"
+            db: mariadb
+            db_version: "11.4.7"
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+            state_machine_adapter: ${{ matrix.state_machine_adapter || 'symfony_workflow' }}
+
+    e2e-mysql-2_2:
+        name: "[2.2] E2E (MySQL)"
+        needs: static-checks-2_2
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.2", "8.3", "8.4"]
+                symfony: ["^6.4", "~7.2.0", "~7.3.0"]
+                mysql: ["8.0", "8.4"]
+        uses: ./.github/workflows/_ci_e2e.yaml
+        with:
+            branch: "2.2"
+            db: mysql
+            db_version: ${{ matrix.mysql }}
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+            twig: "^3.3"
+
+    e2e-pgsql-2_2:
+        name: "[2.2] E2E (PostgreSQL)"
+        needs: static-checks-2_2
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.2", "8.3", "8.4"]
+                symfony: ["^6.4", "~7.2.0", "~7.3.0"]
+                postgres: ["15.13", "16.9", "17.5"]
+        uses: ./.github/workflows/_ci_e2e.yaml
+        with:
+            branch: "2.2"
+            db: postgresql
+            db_version: ${{ matrix.postgres }}
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+
+    frontend-2_2:
+        name: "[2.2] Frontend"
+        needs: static-checks-2_2
+        strategy:
+            fail-fast: false
+            matrix:
+                node: ["22.x", "24.x"]
+        uses: ./.github/workflows/_ci_frontend.yaml
+        with:
+            branch: "2.2"
+            node: ${{ matrix.node }}
+
+    packages-2_2:
+        name: "[2.2] Packages"
+        needs: static-checks-2_2
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.2", "8.3", "8.4"]
+                symfony: ["^6.4", "~7.2.0", "~7.3.0"]
+        uses: ./.github/workflows/_ci_packages.yaml
+        with:
+            branch: "2.2"
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+
+    # ---- Unstable (nightly) ----
+    e2e-unstable:
+        name: "[unstable] E2E"
+        uses: ./.github/workflows/_ci_e2e.yaml
+        with:
+            db: mysql
+            db_version: "8.4"
+            php: "8.3"
+            symfony: "^7.3@beta"
+            unstable: true
+
+    packages-unstable:
+        name: "[unstable] Packages"
+        uses: ./.github/workflows/_ci_packages.yaml
+        with:
+            php: "8.3"
+            symfony: "^7.3@beta"
+            unstable: true
+            ignore_failure: true

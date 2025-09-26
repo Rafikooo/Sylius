@@ -1,0 +1,149 @@
+name: CI (PR/Push)
+
+on:
+    pull_request:
+        paths-ignore:
+            - "adr/**"
+            - "docs/**"
+            - "*.md"
+    push:
+        branches-ignore:
+            - 'dependabot/**'
+            - 'upmerge/**'
+    workflow_dispatch: ~
+
+concurrency:
+    group: ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.base_ref || github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+
+jobs:
+    static-checks:
+        name: "[${{ github.event_name == 'pull_request' && github.base_ref || github.ref_name }}] Static checks"
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - php: "8.2"
+                      symfony: "^6.4"
+                    - php: "8.3"
+                      symfony: "^7.3"
+                    - php: "8.4"
+                      symfony: "^7.3"
+        uses: ./.github/workflows/_ci_static-checks.yaml
+        with:
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+            branch: ${{ github.event_name != 'pull_request' && github.ref_name || '' }}
+            target_branch: ${{ github.event_name == 'pull_request' && github.base_ref || github.ref_name }}
+
+    e2e-mariadb:
+        name: "[${{ github.event_name == 'pull_request' && github.base_ref || github.ref_name }}] E2E (MariaDB)"
+        needs: static-checks
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - php: "8.2"
+                      symfony: "^6.4"
+                      mariadb: "10.11.13"
+                      state_machine_adapter: "winzou_state_machine"
+                    - php: "8.4"
+                      symfony: "^7.3"
+                      mariadb: "11.4.7"
+                      state_machine_adapter: "symfony_workflow"
+        uses: ./.github/workflows/_ci_e2e.yaml
+        with:
+            db: mariadb
+            db_version: ${{ matrix.mariadb }}
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+            state_machine_adapter: ${{ matrix.state_machine_adapter }}
+            branch: ${{ github.event_name != 'pull_request' && github.ref_name || '' }}
+
+    e2e-mysql:
+        name: "[${{ github.event_name == 'pull_request' && github.base_ref || github.ref_name }}] E2E (MySQL)"
+        needs: static-checks
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - php: "8.2"
+                      symfony: "^6.4"
+                      mysql: "8.0"
+                      twig: "^3.3"
+                    - php: "8.3"
+                      symfony: "^7.3"
+                      mysql: "8.4"
+                      twig: "^3.3"
+                    - php: "8.4"
+                      symfony: "^7.3"
+                      mysql: "8.4"
+                      twig: "^3.3"
+        uses: ./.github/workflows/_ci_e2e.yaml
+        with:
+            db: mysql
+            db_version: ${{ matrix.mysql }}
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+            twig: ${{ matrix.twig }}
+            branch: ${{ github.event_name != 'pull_request' && github.ref_name || '' }}
+
+    e2e-pgsql:
+        name: "[${{ github.event_name == 'pull_request' && github.base_ref || github.ref_name }}] E2E (PostgreSQL)"
+        needs: static-checks
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - php: "8.2"
+                      symfony: "^6.4"
+                      postgres: "15.13"
+                    - php: "8.4"
+                      symfony: "^7.3"
+                      postgres: "17.5"
+        uses: ./.github/workflows/_ci_e2e.yaml
+        with:
+            db: postgresql
+            db_version: ${{ matrix.postgres }}
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+            branch: ${{ github.event_name != 'pull_request' && github.ref_name || '' }}
+
+    frontend:
+        name: "[${{ github.event_name == 'pull_request' && github.base_ref || github.ref_name }}] Frontend"
+        needs: static-checks
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - node: "24.x"
+        uses: ./.github/workflows/_ci_frontend.yaml
+        with:
+            node: ${{ matrix.node }}
+            branch: ${{ github.event_name != 'pull_request' && github.ref_name || '' }}
+
+    packages:
+        name: "[${{ github.event_name == 'pull_request' && github.base_ref || github.ref_name }}] Packages"
+        needs: static-checks
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - php: "8.2"
+                      symfony: "^6.4"
+                      orm: ""
+                    - php: "8.3"
+                      symfony: "^7.3"
+                      orm: "^3.3"
+                    - php: "8.4"
+                      symfony: "^7.3"
+                      orm: ""
+        uses: ./.github/workflows/_ci_packages.yaml
+        with:
+            php: ${{ matrix.php }}
+            symfony: ${{ matrix.symfony }}
+            orm: ${{ matrix.orm }}
+            branch: ${{ github.event_name == 'pull_request' && '' || github.ref_name }}

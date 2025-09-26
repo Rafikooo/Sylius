@@ -1,7 +1,6 @@
 name: Static Analysis
 
 on:
-    workflow_dispatch: ~
     workflow_call:
         inputs:
             branch:
@@ -9,8 +8,17 @@ on:
                 required: false
                 type: string
                 default: ""
-            type:
-                description: "Type of the build"
+            target_branch:
+                description: "Target branch label (for gating PHPSpec)"
+                required: false
+                type: string
+                default: ""
+            php:
+                description: "PHP version"
+                required: true
+                type: string
+            symfony:
+                description: "Symfony constraint"
                 required: true
                 type: string
 
@@ -18,37 +26,9 @@ permissions:
     contents: read
 
 jobs:
-    get-matrix:
-        runs-on: ubuntu-latest
-        name: "Get matrix"
-        outputs:
-            matrix: ${{ steps.matrix.outputs.prop }}
-        steps:
-            -   name: "Checkout (With Branch)"
-                if: "${{ inputs.branch != '' }}"
-                uses: actions/checkout@v4
-                with:
-                    ref: ${{ inputs.branch }}
-
-            -   name: "Checkout"
-                if: "${{ inputs.branch == '' }}"
-                uses: actions/checkout@v4
-
-            -
-                name: "Get matrix"
-                id: matrix
-                uses: notiz-dev/github-action-json-property@release
-                with:
-                    path: '.github/workflows/matrix.json'
-                    prop_path: '${{ inputs.type }}.static-checks'
-
     static-checks:
-        needs: get-matrix
         runs-on: ubuntu-latest
-        name: "PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }}"
-        strategy:
-            fail-fast: false
-            matrix: ${{ fromJson(needs.get-matrix.outputs.matrix) }}
+        name: "PHP ${{ inputs.php }}, Symfony ${{ inputs.symfony }}"
         env:
             APP_ENV: test_cached
             DATABASE_URL: "mysql://root:root@127.0.0.1/sylius?charset=utf8mb4&serverVersion=8.0"
@@ -66,7 +46,7 @@ jobs:
             -   name: "Setup PHP"
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: "${{ matrix.php }}"
+                    php-version: "${{ inputs.php }}"
                     ini-values: date.timezone=Europe/Warsaw, opcache.enable=1, opcache.enable_cli=0, opcache.memory_consumption=512, opcache.max_accelerated_files=65407, opcache.interned_strings_buffer=8, opcache.validate_timestamps=0, opcache.save_comments=1, opcache.fast_shutdown=0
                     extensions: intl, gd, opcache, mysql, pdo_mysql
                     tools: symfony, composer-require-checker
@@ -76,7 +56,7 @@ jobs:
                 run: |
                     composer global config --no-plugins allow-plugins.symfony/flex true
                     composer global require --no-progress --no-scripts --no-plugins "symfony/flex:^2.4"
-                    composer config extra.symfony.require "${{ matrix.symfony }}"
+                    composer config extra.symfony.require "${{ inputs.symfony }}"
 
             -   name: Get Composer cache directory
                 id: composer-cache
@@ -87,10 +67,10 @@ jobs:
                 with:
                     path: |
                         ${{ steps.composer-cache.outputs.dir }}
-                    key: ${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}
+                    key: ${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ inputs.symfony }}
 
             -   name: "Require ext-random"
-                if: matrix.php == '8.2'
+                if: inputs.php == '8.2'
                 run: composer require ext-random --no-update --no-scripts --no-interaction
 
             -   name: "Install dependencies"
@@ -122,7 +102,7 @@ jobs:
                 run: vendor/bin/phpstan analyse
 
             -   name: Run PHPSpec
-                if: ${{ inputs.branch == '1.14' || inputs.branch == '2.0' }}
+                if: ${{ inputs.target_branch == '1.14' || inputs.target_branch == '2.0' }}
                 run: vendor/bin/phpspec run --ansi --no-interaction -f dot
 
             -   name: Run ComposerRequireChecker

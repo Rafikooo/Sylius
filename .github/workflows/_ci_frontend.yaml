@@ -1,7 +1,6 @@
 name: Frontend
 
 on:
-    workflow_dispatch: ~
     workflow_call:
         inputs:
             branch:
@@ -9,42 +8,15 @@ on:
                 required: false
                 type: string
                 default: ""
-            type:
-                description: "Type of the build"
+            node:
+                description: "Node.js version"
                 required: true
                 type: string
 
 jobs:
-    get-matrix:
-        runs-on: ubuntu-latest
-        name: "Get matrix"
-        outputs:
-            matrix: ${{ steps.matrix.outputs.prop }}
-        steps:
-            -   name: "Checkout (With Branch)"
-                if: "${{ inputs.branch != '' }}"
-                uses: actions/checkout@v4
-                with:
-                    ref: ${{ inputs.branch }}
-
-            -   name: "Checkout"
-                uses: actions/checkout@v4
-                if: "${{ inputs.branch == '' }}"
-            -
-                name: "Get matrix"
-                id: matrix
-                uses: notiz-dev/github-action-json-property@release
-                with:
-                    path: '.github/workflows/matrix.json'
-                    prop_path: '${{ inputs.type }}.frontend'
-
     frontend:
-        needs: get-matrix
         runs-on: ubuntu-latest
-        name: "NodeJS ${{ matrix.node }}"
-        strategy:
-            fail-fast: false
-            matrix: ${{ fromJson(needs.get-matrix.outputs.matrix) }}
+        name: "NodeJS ${{ inputs.node }}"
 
         env:
             APP_ENV: test_cached
@@ -80,8 +52,9 @@ jobs:
                     database_version: "8.0"
                     php_version: "8.2"
                     symfony_version: "6.4.*"
-                    node_version: ${{ matrix.node }}
+                    node_version: ${{ inputs.node }}
                     chrome_version: stable
                     
             -   name: "Run javascript linter"
                 run: yarn lint
+
