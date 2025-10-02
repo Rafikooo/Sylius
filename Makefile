@@ -28,6 +28,7 @@ frontend:
 	yarn install --pure-lockfile
 	yarn encore production
 
+
 behat: behat-cli behat-non-js behat-js
 
 init: install backend frontend
