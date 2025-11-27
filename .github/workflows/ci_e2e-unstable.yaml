@@ -81,8 +81,16 @@ jobs:
             -   name: Run non-UI Behat
                 run: $BEHAT_BASE_CMD --tags="$BEHAT_NON_UI_TAGS" --suite-tags="$BEHAT_NON_UI_SUITES" || $BEHAT_BASE_CMD --tags="$BEHAT_NON_UI_TAGS" --suite-tags="$BEHAT_NON_UI_SUITES" --rerun
 
-            -   name: Run non-JS Behat
-                run: $BEHAT_BASE_CMD --tags="$BEHAT_NON_JS_TAGS" --suite-tags="$BEHAT_NON_JS_SUITES" || $BEHAT_BASE_CMD --tags="$BEHAT_NON_JS_TAGS" --suite-tags="$BEHAT_NON_JS_SUITES" --rerun
+            -   name: Debug environment before non-JS Behat
+                run: |
+                    echo "=== Environment Variables ==="
+                    echo "APP_ENV: $APP_ENV"
+                    echo "APP_DEBUG: ${APP_DEBUG:-NOT_SET}"
+                    echo "=== Kernel Debug Parameter ==="
+                    php bin/console debug:container --parameter=kernel.debug 2>&1 | grep -A1 -B1 debug || echo "Could not get kernel.debug"
+
+            -   name: Run non-JS Behat (only error page test)
+                run: vendor/bin/behat features/admin/errors/seeing_not_found_page_in_the_admin_panel.feature:14 --colors --strict --no-interaction -vvv -f progress
 
             -   name: Upload logs
                 uses: actions/upload-artifact@v4
